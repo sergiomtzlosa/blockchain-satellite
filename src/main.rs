@@ -19,6 +19,12 @@ fn login(req: &mut Request) -> IronResult<Response> {
 
     let http_method: &str = req.method.as_ref();
 
+    if http_method.to_lowercase() == "post" {
+
+    } else {
+
+    }
+
     println!("Method {}", http_method);
 
     Ok(Response::with((status::Ok, "OK")))
@@ -28,14 +34,36 @@ fn users(req: &mut Request) -> IronResult<Response> {
 
     let http_method: &str = req.method.as_ref();
 
+    if http_method.to_lowercase() == "get" {
+
+    } else if http_method.to_lowercase() == "post" {
+
+    } else if http_method.to_lowercase() == "put" {
+
+    } else if http_method.to_lowercase() == "delete" {
+
+    } else {
+        
+    }
+
     println!("Method {}", http_method);
 
-    Ok(Response::with((status::Ok, "OK")))
+    Ok(Response::with((status::Ok, format!("{}{}\n", "OK ", http_method) )))
 }
 
 fn values(req: &mut Request) -> IronResult<Response> {
 
     let http_method: &str = req.method.as_ref();
+
+    if http_method.to_lowercase() == "post" {
+
+    } else if http_method.to_lowercase() == "put" {
+
+    } else if http_method.to_lowercase() == "delete" {
+
+    } else {
+
+    }
 
     println!("Method {}", http_method);
 
@@ -63,19 +91,19 @@ fn main() {
 
     let mut router = Router::new();
 
-    router.get("/users", users, "users");
-    router.post("/users", users, "users");
-    router.put("/users", users, "users");
-    router.delete("/users", users, "users");
+    router.get("/api/users", users, "users");
+    router.post("/api/users", users, "users");
+    router.put("/api/users", users, "users");
+    router.delete("/api/users", users, "users");
 
-    router.post("/login", login, "login");
+    router.post("/api/login", login, "login");
 
-    router.post("/values", values, "values");
-    router.put("/values", values, "values");
-    router.delete("/values", values, "values");
+    router.post("/api/values", values, "values");
+    router.put("/api/values", values, "values");
+    router.delete("/api/values", values, "values");
 
     println!("salt {}", config::SALT_WORD);
 
-    println!("Running on http://0.0.0.0:8090");
-    Iron::new(router).http("0.0.0.0:8090").unwrap();
+    println!("Running on http://0.0.0.0:8086");
+    Iron::new(router).http("0.0.0.0:8086").unwrap();
 }
