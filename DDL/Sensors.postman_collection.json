@@ -1,0 +1,632 @@
+{
+	"info": {
+		"_postman_id": "16494227-a9b3-42ec-822b-04b700782d91",
+		"name": "Sensors",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/sensors/api/users",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"user_3\",\n\t\"password\" : \"passwordUser3\",\n\t\"name\" : \"User3\",\n\t\"surname\" : \"User3 description\",\n\t\"description\" : \"API user\",\n\t\"admin\" : \"0\"\n}\n"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/users",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic c2lkOjEzbnFtVg=="
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					},
+					{
+						"key": "_method",
+						"value": "put",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"user_3\",\n\t\"password\" : \"passwordUser3\",\n\t\"name\" : \"User3\",\n\t\"surname\" : \"User3 description modified\",\n\t\"description\" : \"API user\",\n\t\"admin\" : \"0\",\n\t\"user_id\" : \"3\"\n}\n"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/users",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"user_id\" : \"3\"}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/users",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/users?user_id=1",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"api_user\",\n\t\"password\" : \"api_user1234\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/login",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/values",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json",
+						"disabled": false
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y",
+						"disabled": false
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec",
+						"disabled": false
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"key1\" : \"valueaa22222\",\n\t\"key2\" : \"value2\",\n\t\"key3\" : \"value3\",\n\t\"key4\" : \"value4\",\n\t\"key5\" : \"value5\",\n\t\"key6\" : \"value6\",\n\t\"key7\" : \"value7\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/values",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"values"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/values",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"docs\" : \"1\",\n\t\"date_from\" : \"2018-05-01 00:00:00\",\n\t\"date_to\" : \"2019-05-30 00:00:00\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/values",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"values"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/values",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/values?blockchain_name=sensors_values",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"values"
+					],
+					"query": [
+						{
+							"key": "blockchain_name",
+							"value": "sensors_values"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/blockchain_explorer",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic YXBpX3NlbnNvcjphcGlfc2Vuc29y"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/blockchain_explorer?block_id=5bc9e64a74fece048f04b206&encryption=1",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"blockchain_explorer"
+					],
+					"query": [
+						{
+							"key": "block_id",
+							"value": "5bc9e64a74fece048f04b206"
+						},
+						{
+							"key": "encryption",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/sensors/api/open_blockchain_explorer",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/open_blockchain_explorer?block_id=5bc9e64a74fece048f04b206&encryption=0",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"open_blockchain_explorer"
+					],
+					"query": [
+						{
+							"key": "block_id",
+							"value": "5bc9e64a74fece048f04b206"
+						},
+						{
+							"key": "encryption",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

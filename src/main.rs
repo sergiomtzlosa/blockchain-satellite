@@ -76,6 +76,6 @@ fn main() {
 
     println!("salt {}", config::SALT_WORD);
 
-    println!("Running on http://0.0.0.0:8080");
-    Iron::new(router).http("0.0.0.0:8080").unwrap();
+    println!("Running on http://0.0.0.0:8090");
+    Iron::new(router).http("0.0.0.0:8090").unwrap();
 }
