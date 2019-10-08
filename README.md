@@ -1,4 +1,4 @@
-Blockchain written in Rust for low-orbiur satellites
+Blockchain written in Rust for low-orbit satellites
 ----------------------------------------------------
 
 Compile:
