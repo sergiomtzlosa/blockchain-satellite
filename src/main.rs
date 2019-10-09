@@ -43,9 +43,10 @@ fn login(req: &mut Request) -> IronResult<Response> {
                     status_code = status::InternalServerError;
                     utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR,  messages::JSON_CONTENT_NOT_VALID)
 
-                    // Perform login against database and check the output
                 } else {
 
+                    // Perform login against database and check the output
+                    
                     status_code = status::Ok;
                     json::encode(&"nice").expect("Error encoding response")
                 }
