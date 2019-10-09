@@ -1,22 +1,21 @@
 extern crate iron;
 extern crate router;
 extern crate dotenv;
+extern crate rustc_serialize;
 
 #[allow(unused_imports)]
 use self::databases::*;
 use dotenv::dotenv;
+use iron::prelude::*;
+use iron::status;
+use router::Router;
+use rustc_serialize::json;
+use std::collections::HashMap;
 
 mod databases;
 mod utils;
 mod http_codes;
-
-use iron::prelude::*;
-use iron::status;
-use router::Router;
-// use iron::mime::Mime;
-// use std::collections::HashMap;
-// use rustc_serialize::json;
-// use std::io::Read;
+mod messages;
 
 fn login(req: &mut Request) -> IronResult<Response> {
 
@@ -24,13 +23,43 @@ fn login(req: &mut Request) -> IronResult<Response> {
 
     if http_method.to_lowercase() == "post" {
 
+        let str_response = utils::get_json_body(req);
+
+        //println!("{}", str_response);
+
+        let out = match json::decode(&str_response) {
+
+            Ok(incoming)  => {
+
+                let map: HashMap<String, String> =  incoming;
+
+                let user_name = map.get("username").unwrap();
+                let password = map.get("password").unwrap();
+
+                println!("{} - {}", user_name, password);
+
+                json::encode(&"nice").expect("Error encoding response")
+            },
+            Err(_) => {
+
+                let response = messages::JSON_CONTENT_NOT_VALID;
+
+                utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, response)
+            }
+        };
+
+        Ok(utils::create_response(true,status::InternalServerError,out))
+
     } else {
 
+        Ok(utils::create_response(true,
+            status::InternalServerError,
+            utils::create_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)))
     }
 
-    println!("Method {}", http_method);
+    //println!("Method {}", http_method);
 
-    Ok(Response::with((status::Ok, "OK")))
+    //Ok(Response::with((status::Ok, "OK")))
 }
 
 fn users(req: &mut Request) -> IronResult<Response> {
