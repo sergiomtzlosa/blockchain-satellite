@@ -1,18 +1,17 @@
 extern crate iron;
 extern crate router;
+extern crate dotenv;
 
-mod config;
+use dotenv::dotenv;
+mod utils;
 mod http_codes;
 
 use iron::prelude::*;
-// use iron::mime::Mime;
 use iron::status;
-// use std::collections::HashMap;
-
 use router::Router;
-
+// use iron::mime::Mime;
+// use std::collections::HashMap;
 // use rustc_serialize::json;
-
 // use std::io::Read;
 
 fn login(req: &mut Request) -> IronResult<Response> {
@@ -43,7 +42,7 @@ fn users(req: &mut Request) -> IronResult<Response> {
     } else if http_method.to_lowercase() == "delete" {
 
     } else {
-        
+
     }
 
     println!("Method {}", http_method);
@@ -87,22 +86,28 @@ fn values(req: &mut Request) -> IronResult<Response> {
 //     Ok(Response::with((content_type, status::Ok, payload)))
 // }
 
+static USER_SERVICE: &str = "/api/users";
+static LOGIN_SERVICE: &str = "/api/login";
+static VALUES_SERVICE: &str = "/api/values";
+
 fn main() {
+    
+    dotenv().ok();
 
     let mut router = Router::new();
 
-    router.get("/api/users", users, "users");
-    router.post("/api/users", users, "users");
-    router.put("/api/users", users, "users");
-    router.delete("/api/users", users, "users");
+    router.get(USER_SERVICE, users, "users");
+    router.post(USER_SERVICE, users, "users");
+    router.put(USER_SERVICE, users, "users");
+    router.delete(USER_SERVICE, users, "users");
 
-    router.post("/api/login", login, "login");
+    router.post(LOGIN_SERVICE, login, "login");
 
-    router.post("/api/values", values, "values");
-    router.put("/api/values", values, "values");
-    router.delete("/api/values", values, "values");
+    router.post(VALUES_SERVICE, values, "values");
+    router.put(VALUES_SERVICE, values, "values");
+    router.delete(VALUES_SERVICE, values, "values");
 
-    println!("salt {}", config::SALT_WORD);
+    println!("salt key: {}", utils::unwrap_key("SALT_WORD"));
 
     println!("Running on http://0.0.0.0:8086");
     Iron::new(router).http("0.0.0.0:8086").unwrap();

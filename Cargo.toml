@@ -1,5 +1,5 @@
 [package]
-name = "microservice_app"
+name = "blockchain-rust"
 version = "0.1.0"
 edition = "2018"
 
@@ -7,3 +7,4 @@ edition = "2018"
 iron = "*"
 router = "*"
 rustc-serialize = "*"
+dotenv = "0.10.0"
