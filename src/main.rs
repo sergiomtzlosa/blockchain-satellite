@@ -36,7 +36,7 @@ fn login(req: &mut Request) -> IronResult<Response> {
                 let username = map.get("username").unwrap();
                 let password = map.get("password").unwrap();
 
-                println!("{} - {}", username, password);
+                //println!("{} - {}", username, password);
 
                 if username.len() == 0 || password.len() == 0 {
 
@@ -46,7 +46,7 @@ fn login(req: &mut Request) -> IronResult<Response> {
                 } else {
 
                     // Perform login against database and check the output
-                    
+
                     status_code = status::Ok;
                     json::encode(&"nice").expect("Error encoding response")
                 }
