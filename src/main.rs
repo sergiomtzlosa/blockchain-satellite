@@ -25,7 +25,7 @@ fn login(req: &mut Request) -> IronResult<Response> {
 
         let str_response = utils::get_json_body(req);
 
-        //println!("{}", str_response);
+        let status_code;
 
         let out = match json::decode(&str_response) {
 
@@ -33,33 +33,37 @@ fn login(req: &mut Request) -> IronResult<Response> {
 
                 let map: HashMap<String, String> =  incoming;
 
-                let user_name = map.get("username").unwrap();
+                let username = map.get("username").unwrap();
                 let password = map.get("password").unwrap();
 
-                println!("{} - {}", user_name, password);
+                println!("{} - {}", username, password);
 
-                json::encode(&"nice").expect("Error encoding response")
+                if username.len() == 0 || password.len() == 0 {
+
+                    status_code = status::InternalServerError;
+                    utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR,  messages::JSON_CONTENT_NOT_VALID)
+
+                    // Perform login against database and check the output
+                } else {
+
+                    status_code = status::Ok;
+                    json::encode(&"nice").expect("Error encoding response")
+                }
             },
             Err(_) => {
 
-                let response = messages::JSON_CONTENT_NOT_VALID;
-
-                utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, response)
+                status_code = status::InternalServerError;
+                utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR,  messages::JSON_CONTENT_NOT_VALID)
             }
         };
 
-        Ok(utils::create_response(true,status::InternalServerError,out))
+        Ok(utils::create_response(status_code, out))
 
     } else {
 
-        Ok(utils::create_response(true,
-            status::InternalServerError,
-            utils::create_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)))
+        Ok(utils::create_response(status::InternalServerError,
+            utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)))
     }
-
-    //println!("Method {}", http_method);
-
-    //Ok(Response::with((status::Ok, "OK")))
 }
 
 fn users(req: &mut Request) -> IronResult<Response> {
@@ -142,6 +146,7 @@ fn main() {
 
     println!("salt key: {}", utils::unwrap_key("SALT_WORD"));
 
-    println!("Running on http://0.0.0.0:8086");
-    Iron::new(router).http("0.0.0.0:8086").unwrap();
+    let server = String::from("0.0.0.0:") + &utils::unwrap_key("WEBSERVER_PORT");
+    println!("Running on http://{}", server);
+    Iron::new(router).http(server).unwrap();
 }
