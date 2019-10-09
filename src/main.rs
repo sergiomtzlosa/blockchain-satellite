@@ -2,7 +2,11 @@ extern crate iron;
 extern crate router;
 extern crate dotenv;
 
+#[allow(unused_imports)]
+use self::databases::*;
 use dotenv::dotenv;
+
+mod databases;
 mod utils;
 mod http_codes;
 
@@ -91,7 +95,7 @@ static LOGIN_SERVICE: &str = "/api/login";
 static VALUES_SERVICE: &str = "/api/values";
 
 fn main() {
-    
+
     dotenv().ok();
 
     let mut router = Router::new();
