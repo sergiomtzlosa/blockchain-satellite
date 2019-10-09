@@ -24,9 +24,9 @@ if (!existsRoot) {
 
 var authResult = db.auth('root','root')
 
-print("Authenticated as root!!!")
-
 if (authResult) {
+
+  print("Authenticated as root!!!")
 
   var user = db.system.users.find({user:'data_api'}).count()
 
@@ -49,4 +49,8 @@ if (authResult) {
   );
 
   print("User data_api created!!!")
+  
+} else {
+
+    print("Fail authentication as root!!!")
 }
