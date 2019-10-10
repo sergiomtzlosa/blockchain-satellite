@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-struct MySQLConnector {
+pub struct MySQLConnector {
 
    host: &'static str,
    user: &'static str,
@@ -8,7 +8,6 @@ struct MySQLConnector {
    database: &'static str
 }
 
-#[allow(dead_code)]
 impl MySQLConnector {
 
    pub fn new(host: &'static str, user: &'static str, password: &'static str, port:&'static str) -> MySQLConnector {
@@ -24,5 +23,9 @@ impl MySQLConnector {
    pub fn set_database(&mut self, database: &'static str) {
 
      self.database = database;
+   }
+
+   pub fn empty_connector() {
+
    }
 }

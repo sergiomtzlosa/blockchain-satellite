@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-struct MongoDBConnector {
+pub struct MongoDBConnector {
 
    host: &'static str,
    user: &'static str,
