@@ -17,6 +17,12 @@ struct User {
     is_admin: bool,
 }
 
+#[allow(dead_code)]
+struct UserToken {
+    token: Option<String>,
+    expired: bool,
+}
+
 pub fn fill_values(host: &'static str, user: &'static str, password: &'static str, port:&'static str, database: &'static str) -> MySQLConnector{
 
     let data_values = MySQLConnector::new_init(host, user, password, port, database);
@@ -46,14 +52,14 @@ pub fn connexion_values() -> HashMap<String, String> {
 
 }
 
-pub fn enabled_user(username: String) -> bool {
+pub fn enabled_user(token: String) -> bool {
 
     let values: HashMap<String, String>  = connexion_values();
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
 
-    let query: String = format!("SELECT enabled FROM sensors_users WHERE username = '{}' LIMIT 1", username);
+    let query: String = format!("SELECT enabled FROM sensors_users WHERE username = '{}' LIMIT 1", token);
 
     let selected_user: Vec<User> = pool.prep_exec(query, ()).map(|result| {
 
@@ -80,7 +86,13 @@ pub fn enabled_user(username: String) -> bool {
 
     if rows > 0 {
 
-        expired = true;
+        let user_enabled: bool = selected_user[0].enabled;
+
+        if user_enabled {
+
+            expired = true;
+        }
+
     }
 
     return expired;
