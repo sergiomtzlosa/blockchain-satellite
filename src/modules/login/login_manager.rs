@@ -42,7 +42,6 @@ pub fn connexion_values() -> HashMap<String, String> {
     map_values.insert(String::from("table"), table);
 
     return map_values;
-
 }
 
 pub fn enabled_user(username: String) -> bool {
