@@ -5,15 +5,15 @@ use crate::utils;
 use std::collections::HashMap;
 use mysql as my;
 
-#[allow(dead_code)]
+#[derive(Clone, Copy)]
 struct User {
     enabled: bool
 }
 
-#[allow(dead_code)]
-struct UserToken {
-    token: Option<String>,
-    expired: bool,
+struct UserLogin {
+
+    token: String,
+    user_id: i32,
 }
 
 pub fn fill_values(host: &'static str, user: &'static str, password: &'static str, port:&'static str, database: &'static str) -> MySQLConnector{
@@ -47,7 +47,7 @@ pub fn connexion_values() -> HashMap<String, String> {
 
 pub fn enabled_user(username: String) -> bool {
 
-    let values: HashMap<String, String>  = connexion_values();
+    let values: HashMap<String, String> = connexion_values();
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
@@ -84,7 +84,45 @@ pub fn enabled_user(username: String) -> bool {
     return user_valid;
 }
 
-pub fn login_user(username: String, password: String) -> bool {
+pub fn login_user(username: String, password: String) -> (String, String) {
 
-    return true;
+    let values: HashMap<String, String> = connexion_values();
+
+    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
+    let pool = my::Pool::new(conn_string).unwrap();
+
+    //let hash_password = String::from("06e242e1ee293f4d2f622376f03dd732ec8a725bb35bf73e553444664c3d64d5");//utils::new_hash(password.as_ref());
+
+    // Check has function
+    let hash_password = String::from(utils::new_hash(password.as_ref()));
+
+    println!("hash password: {}", hash_password);
+
+    let query: String = format!("CALL login_user_actions('{}', '{}');", username, hash_password);
+
+    let logged_user: Vec<UserLogin> = pool.prep_exec(query, ()).map(|result| {
+
+        result.map(|x| x.unwrap()).map(|row| {
+
+            let (token, user_id) = my::from_row(row);
+
+            UserLogin {
+                token: token,
+                user_id: user_id
+            }
+        }).collect()
+    }).unwrap();
+
+    let rows = logged_user.len();
+
+    let mut token: String = "".to_string();
+    let mut user_id: String = "".to_string();
+
+    if rows > 0 {
+
+        token = logged_user[0].token.to_string();
+        user_id = logged_user[0].user_id.to_string();
+    }
+
+    return (token, user_id);
 }

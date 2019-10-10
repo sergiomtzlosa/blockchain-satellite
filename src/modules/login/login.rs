@@ -44,8 +44,23 @@ pub fn perform_login(request: &mut Request) -> Response {
                     // Perform login against database and check the output
                     if login_manager::enabled_user(String::from(username)) {
 
-                        status_code = status::Ok;
-                        json::encode(&"nice").expect("Error encoding response")
+                        let (token, user_id) =  login_manager::login_user(String::from(username), String::from(password));
+
+                        if token.len() > 0 && user_id.len() > 0 {
+
+                            let mut map: HashMap<String, String> = HashMap::new();
+
+                            map.insert(String::from("user_id"), user_id);
+                            map.insert(String::from("token"), token);
+
+                            status_code = status::Ok;
+                            json::encode(&map).expect("Error encoding response")
+
+                        } else {
+
+                            status_code = status::InternalServerError;
+                            utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::USER_DISABLED)
+                        }
 
                     } else {
 
