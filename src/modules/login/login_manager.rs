@@ -7,14 +7,7 @@ use mysql as my;
 
 #[allow(dead_code)]
 struct User {
-    user_id: i32,
-    username: Option<String>,
-    password: Option<String>,
-    name: Option<String>,
-    surname: Option<String>,
-    description: Option<String>,
-    enabled: bool,
-    is_admin: bool,
+    enabled: bool
 }
 
 #[allow(dead_code)]
@@ -52,37 +45,30 @@ pub fn connexion_values() -> HashMap<String, String> {
 
 }
 
-pub fn enabled_user(token: String) -> bool {
+pub fn enabled_user(username: String) -> bool {
 
     let values: HashMap<String, String>  = connexion_values();
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
 
-    let query: String = format!("SELECT enabled FROM sensors_users WHERE username = '{}' LIMIT 1", token);
+    let query: String = format!("SELECT enabled FROM sensors_users WHERE username = '{}' LIMIT 1", username);
 
     let selected_user: Vec<User> = pool.prep_exec(query, ()).map(|result| {
 
         result.map(|x| x.unwrap()).map(|row| {
 
-            let (user_id, username, password, name, surname, description, enabled, is_admin) = my::from_row(row);
+            let enabled = my::from_row(row);
 
             User {
-                user_id: user_id,
-                username: username,
-                password: password,
-                name: name,
-                surname: surname,
-                description: description,
-                enabled: enabled,
-                is_admin: is_admin
+                enabled: enabled
             }
         }).collect()
     }).unwrap();
 
     let rows = selected_user.len();
 
-    let mut expired: bool = false;
+    let mut user_valid: bool = false;
 
     if rows > 0 {
 
@@ -90,10 +76,15 @@ pub fn enabled_user(token: String) -> bool {
 
         if user_enabled {
 
-            expired = true;
+            user_valid = true;
         }
 
     }
 
-    return expired;
+    return user_valid;
+}
+
+pub fn login_user(username: String, password: String) -> bool {
+
+    return true;
 }

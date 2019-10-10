@@ -42,9 +42,16 @@ pub fn perform_login(request: &mut Request) -> Response {
                 } else {
 
                     // Perform login against database and check the output
+                    if login_manager::enabled_user(String::from(username)) {
 
-                    status_code = status::Ok;
-                    json::encode(&"nice").expect("Error encoding response")
+                        status_code = status::Ok;
+                        json::encode(&"nice").expect("Error encoding response")
+
+                    } else {
+
+                        status_code = status::InternalServerError;
+                        utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR,  messages::USER_DISABLED)
+                    }
                 }
             },
             Err(_) => {
