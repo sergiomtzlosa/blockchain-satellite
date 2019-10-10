@@ -78,7 +78,6 @@ pub fn enabled_user(username: String) -> bool {
 
             user_valid = true;
         }
-
     }
 
     return user_valid;
