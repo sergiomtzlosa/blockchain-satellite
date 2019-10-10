@@ -22,10 +22,6 @@ impl MySQLConnector {
 
    pub fn set_database(&mut self, database: &'static str) {
 
-     self.database = database;
-   }
-
-   pub fn empty_connector() {
-
+       self.database = database;
    }
 }

@@ -3,8 +3,6 @@ extern crate router;
 extern crate dotenv;
 extern crate rustc_serialize;
 
-mod root { pub use super::*; }
-
 pub use blockchain_rust::modules::login::login;
 use dotenv::dotenv;
 use iron::prelude::*;

@@ -13,7 +13,7 @@ pub use super::super::databases::connector_mysql;
 
 pub fn perform_login(request: &mut Request) -> Response {
 
-    connector_mysql::MySQLConnector::empty_connector();
+    //connector_mysql::MySQLConnector::empty_connector();
 
     let http_method = request.method.as_ref();
 

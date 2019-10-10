@@ -2,9 +2,13 @@
 name = "blockchain-rust"
 version = "0.1.0"
 edition = "2018"
+include = ["src/modules/*", "Cargo.toml"]
 
 [dependencies]
 iron = "*"
 router = "*"
+mysql = "*"
 rustc-serialize = "*"
 dotenv = "0.10.0"
+rust-crypto = "0.2.36"
+rand = "0.3.0"

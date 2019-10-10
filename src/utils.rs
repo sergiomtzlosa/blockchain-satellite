@@ -1,4 +1,5 @@
 extern crate iron;
+extern crate crypto;
 
 use std::env;
 use iron::status;
@@ -7,6 +8,12 @@ use iron::mime::Mime;
 use std::io::Read;
 use std::collections::HashMap;
 use rustc_serialize::json;
+use crypto::sha2::Sha256;
+use crypto::hmac::Hmac;
+use crypto::mac::Mac;
+use rustc_serialize::hex::ToHex;
+use rand::{OsRng, Rng};
+use std::iter::repeat;
 
 pub fn unwrap_key(key: &str) -> String {
 
@@ -40,4 +47,21 @@ pub fn create_json_output_payload(code: &str, message: &str) -> String {
     let output_payload = json::encode(&value_object).expect("Error encoding response");
 
     return output_payload;
+}
+
+pub fn new_hash(message: &str) -> String {
+
+    let mut gen = OsRng::new().ok().expect("Failed to get OS random generator");
+
+    let salted: String = String::from(message) + &unwrap_key("SALT_WORD").as_ref();
+
+    let mut hmac_key: Vec<u8> = repeat(0u8).take(32).collect();
+    gen.fill_bytes(hmac_key.as_mut_slice());
+
+    let mut hmac = Hmac::new(Sha256::new(), &hmac_key);
+    hmac.input(salted.as_bytes());
+
+    let result = hmac.result().code().to_hex();
+
+    return result;
 }
