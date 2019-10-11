@@ -98,7 +98,7 @@ pub fn login_user(username: String, password: String) -> (String, String) {
 
     let hash_password = String::from(utils::new_hash(password.as_ref()));
 
-    println!("hash password: {}", hash_password);
+    //println!("hash password: {}", hash_password);
 
     let query: String = format!("CALL login_user_actions('{}', '{}');", username, hash_password);
 
