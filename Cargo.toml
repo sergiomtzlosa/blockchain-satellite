@@ -3,6 +3,7 @@ name = "blockchain-rust"
 version = "0.1.0"
 edition = "2018"
 include = ["src/modules/*", "Cargo.toml"]
+exclude = ["target/*"]
 authors = ["Sergio Martinez-Losa del Rincon <sergiomtzlosa@protonmail.com>", "Esteban Damian Gutierrez Mlot <esguti@protonmail.com>"]
 
 [dependencies]
