@@ -99,7 +99,7 @@ pub fn login_user(username: String, password: String) -> (String, String) {
 
     if rows > 0 {
 
-        let object = &logged_user[0];
+        let object: &UserLogin = &logged_user[0];
         let token = object.token.to_string();
         let user_id = object.user_id.to_string();
 
