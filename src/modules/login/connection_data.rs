@@ -1,24 +1,22 @@
 use crate::utils;
-use std::collections::HashMap;
-pub use crate::macros;
 
-pub fn connection_values() -> HashMap<String, String> {
+lazy_static! {
 
-    let user = utils::unwrap_key("MARIADB_USER");
-    let password = utils::unwrap_key("MARIADB_PASSWORD");
-    let host = utils::unwrap_key("MARIADB_HOST");
-    let port = utils::unwrap_key("MARIADB_PORT");
-    let database = utils::unwrap_key("MARIADB_DATABASE");
-    let table = utils::unwrap_key("MARIADB_TABLE");
+    #[derive(Copy, Clone, Debug)]
+    pub static ref MYSQL_USER: String = utils::unwrap_key("MARIADB_USER");
 
-    let mut map_values: HashMap<String, String> = HashMap::new();
+    #[derive(Copy, Clone, Debug)]
+    pub static ref MYSQL_PASSWORD: String = utils::unwrap_key("MARIADB_PASSWORD");
 
-    map_values.insert(to_string!("user"), user);
-    map_values.insert(to_string!("password"), password);
-    map_values.insert(to_string!("host"), host);
-    map_values.insert(to_string!("port"), port);
-    map_values.insert(to_string!("database"), database);
-    map_values.insert(to_string!("table"), table);
+    #[derive(Copy, Clone, Debug)]
+    pub static ref MYSQL_HOST: String = utils::unwrap_key("MARIADB_HOST");
 
-    return map_values;
+    #[derive(Copy, Clone, Debug)]
+    pub static ref MYSQL_PORT: String = utils::unwrap_key("MARIADB_PORT");
+
+    #[derive(Copy, Clone, Debug)]
+    pub static ref MYSQL_DATABASE: String = utils::unwrap_key("MARIADB_DATABASE");
+
+    #[derive(Copy, Clone, Debug)]
+    pub static ref MYSQL_TABLE: String = utils::unwrap_key("MARIADB_TABLE");
 }

@@ -1,10 +1,9 @@
 extern crate mysql;
 
-pub use super::connection_data;
-pub use crate::macros;
+use crate::modules::login::connection_data::*;
 pub use super::super::databases::connector_mysql::MySQLConnector;
+pub use crate::macros;
 use crate::utils;
-use std::collections::HashMap;
 use mysql as my;
 //use chrono::{NaiveDate, NaiveDateTime};
 
@@ -35,9 +34,7 @@ pub fn fill_values(host: &'static str, user: &'static str, password: &'static st
 
 pub fn enabled_user(username: String) -> bool {
 
-    let values: HashMap<String, String> = connection_data::connection_values();
-
-    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
+    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
     let pool = my::Pool::new(conn_string).unwrap();
 
     let query: String = format!("SELECT enabled FROM sensors_users WHERE username = '{}' LIMIT 1", username);
@@ -73,9 +70,7 @@ pub fn enabled_user(username: String) -> bool {
 
 pub fn login_user(username: String, password: String) -> (String, String) {
 
-    let values: HashMap<String, String> = connection_data::connection_values();
-
-    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
+    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
     let pool = my::Pool::new(conn_string).unwrap();
 
     let hash_password = to_string!(utils::new_hash(password.as_ref()));
