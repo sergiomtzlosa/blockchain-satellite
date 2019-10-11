@@ -84,7 +84,9 @@ fn main() {
 
     let server = to_string!("0.0.0.0:") + &utils::unwrap_key("WEBSERVER_PORT");
 
-    println!("Running on http://{}", server);
+    println!("");
+    println!(" - Starting webserver with Rust...");
+    println!(" - Webserver running on http://{}", server);
 
     Iron::new(router).http(server).unwrap();
 }
