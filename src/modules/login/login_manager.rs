@@ -8,11 +8,12 @@ use std::collections::HashMap;
 use mysql as my;
 //use chrono::{NaiveDate, NaiveDateTime};
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 struct User {
     enabled: bool
 }
 
+#[derive(Debug)]
 struct UserLogin {
 
     token: String,
@@ -98,8 +99,9 @@ pub fn login_user(username: String, password: String) -> (String, String) {
 
     if rows > 0 {
 
-        let token = logged_user[0].token.to_string();
-        let user_id = logged_user[0].user_id.to_string();
+        let object = &logged_user[0];
+        let token = object.token.to_string();
+        let user_id = object.user_id.to_string();
 
 	return (token, user_id);
     }
