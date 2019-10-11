@@ -1,4 +1,3 @@
-extern crate iron;
 extern crate crypto;
 
 use std::env;
