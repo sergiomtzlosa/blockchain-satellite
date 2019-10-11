@@ -1,8 +1,8 @@
 extern crate mysql;
 
-use crate::modules::login::connection_data::*;
-pub use super::super::databases::connector_mysql::MySQLConnector;
 pub use crate::macros;
+use crate::modules::login::connection_data::*;
+use crate::modules::databases::connector_mysql::MySQLConnector;
 use crate::utils;
 use mysql as my;
 //use chrono::{NaiveDate, NaiveDateTime};

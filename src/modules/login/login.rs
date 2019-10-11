@@ -4,11 +4,11 @@ use rustc_serialize::json;
 use iron::prelude::*;
 use iron::status;
 use std::collections::HashMap;
+use crate::modules::login::login_manager;
 
 pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
-pub use super::login_manager;
 pub use crate::macros;
 
 pub fn perform_login(request: &mut Request) -> Response {
