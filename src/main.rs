@@ -54,6 +54,8 @@ fn values(req: &mut Request) -> IronResult<Response> {
 
     } else if http_method.to_lowercase() == "put" {
 
+    } else if http_method.to_lowercase() == "get" {
+
     } else if http_method.to_lowercase() == "delete" {
 
     } else {
@@ -80,6 +82,7 @@ fn main() {
 
     router.post(VALUES_SERVICE, values, "values");
     router.put(VALUES_SERVICE, values, "values");
+    router.get(VALUES_SERVICE, values, "values");
     router.delete(VALUES_SERVICE, values, "values");
 
     let server = to_string!("0.0.0.0:") + &utils::unwrap_key("WEBSERVER_PORT");
