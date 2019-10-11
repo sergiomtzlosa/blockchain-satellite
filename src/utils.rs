@@ -15,7 +15,7 @@ use rustc_serialize::hex::ToHex;
 
 pub fn unwrap_key(key: &str) -> String {
 
-    let value: String = String::from(env::var(key).unwrap());
+    let value: String = to_string!(env::var(key).unwrap());
 
     return value;
 }
@@ -49,7 +49,7 @@ pub fn create_json_output_payload(code: &str, message: &str) -> String {
 
 pub fn new_hash(message: &str) -> String {
 
-    let salted: String = String::from(message) + &unwrap_key("SALT_WORD").as_ref();
+    let salted: String = to_string!(message) + &unwrap_key("SALT_WORD").as_ref();
 
     let hmac_key: Vec<u8> = Vec::new();
     let mut hmac = Hmac::new(Sha256::new(), &hmac_key);

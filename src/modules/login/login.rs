@@ -9,11 +9,9 @@ pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
 pub use super::login_manager;
-pub use super::super::databases::connector_mysql;
+pub use crate::macros;
 
 pub fn perform_login(request: &mut Request) -> Response {
-
-    //connector_mysql::MySQLConnector::empty_connector();
 
     let http_method = request.method.as_ref();
 
@@ -32,8 +30,6 @@ pub fn perform_login(request: &mut Request) -> Response {
                 let username = map.get("username").unwrap();
                 let password = map.get("password").unwrap();
 
-                //println!("{} - {}", username, password);
-
                 if username.len() == 0 || password.len() == 0 {
 
                     status_code = status::InternalServerError;
@@ -42,16 +38,16 @@ pub fn perform_login(request: &mut Request) -> Response {
                 } else {
 
                     // Perform login against database and check the output
-                    if login_manager::enabled_user(String::from(username)) {
+                    if login_manager::enabled_user(to_string!(username)) {
 
-                        let (token, user_id) =  login_manager::login_user(String::from(username), String::from(password));
+                        let (token, user_id) =  login_manager::login_user(to_string!(username), to_string!(password));
 
                         if token.len() > 0 && user_id.len() > 0 {
 
                             let mut map: HashMap<String, String> = HashMap::new();
 
-                            map.insert(String::from("user_id"), user_id);
-                            map.insert(String::from("token"), token);
+                            map.insert(to_string!("user_id"), user_id);
+                            map.insert(to_string!("token"), token);
 
                             status_code = status::Ok;
                             json::encode(&map).expect("Error encoding response")

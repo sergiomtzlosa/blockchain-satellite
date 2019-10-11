@@ -1,5 +1,6 @@
 extern crate mysql;
 
+pub use crate::macros;
 pub use super::super::databases::connector_mysql::MySQLConnector;
 use crate::utils;
 use std::collections::HashMap;
@@ -41,12 +42,12 @@ pub fn connexion_values() -> HashMap<String, String> {
 
     let mut map_values: HashMap<String, String> = HashMap::new();
 
-    map_values.insert(String::from("user"), user);
-    map_values.insert(String::from("password"), password);
-    map_values.insert(String::from("host"), host);
-    map_values.insert(String::from("port"), port);
-    map_values.insert(String::from("database"), database);
-    map_values.insert(String::from("table"), table);
+    map_values.insert(to_string!("user"), user);
+    map_values.insert(to_string!("password"), password);
+    map_values.insert(to_string!("host"), host);
+    map_values.insert(to_string!("port"), port);
+    map_values.insert(to_string!("database"), database);
+    map_values.insert(to_string!("table"), table);
 
     return map_values;
 }
@@ -96,9 +97,7 @@ pub fn login_user(username: String, password: String) -> (String, String) {
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
 
-    let hash_password = String::from(utils::new_hash(password.as_ref()));
-
-    //println!("hash password: {}", hash_password);
+    let hash_password = to_string!(utils::new_hash(password.as_ref()));
 
     let query: String = format!("CALL login_user_actions('{}', '{}');", username, hash_password);
 

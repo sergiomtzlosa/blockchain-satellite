@@ -9,7 +9,13 @@ use iron::prelude::*;
 use iron::status;
 use router::Router;
 
+#[macro_use] 
+mod macros;
 pub mod utils;
+
+static USER_SERVICE: &str = "/api/users";
+static LOGIN_SERVICE: &str = "/api/login";
+static VALUES_SERVICE: &str = "/api/values";
 
 fn login(req: &mut Request) -> IronResult<Response> {
 
@@ -59,27 +65,6 @@ fn values(req: &mut Request) -> IronResult<Response> {
     Ok(Response::with((status::Ok, "OK")))
 }
 
-// fn post_login(_ : &mut Request) -> IronResult<Response> {
-// //fn post_login(req: &mut Request) -> IronResult<Response> {
-//
-//     // let mut payload = String::new();
-//     // req.body.read_to_string(&mut payload).expect("JSON body expected");
-//     //
-//     // let user: String = json::decode(&payload).expect("User object expected");
-//     //
-//     let mut value = HashMap::new();
-//
-//     value.insert("message", "test");
-//
-//     let payload = json::encode(&value).unwrap();
-//     let content_type = "application/json".parse::<Mime>().unwrap();
-//     Ok(Response::with((content_type, status::Ok, payload)))
-// }
-
-static USER_SERVICE: &str = "/api/users";
-static LOGIN_SERVICE: &str = "/api/login";
-static VALUES_SERVICE: &str = "/api/values";
-
 fn main() {
 
     dotenv().ok();
@@ -97,9 +82,9 @@ fn main() {
     router.put(VALUES_SERVICE, values, "values");
     router.delete(VALUES_SERVICE, values, "values");
 
-    println!("salt key: {}", utils::unwrap_key("SALT_WORD"));
+    let server = to_string!("0.0.0.0:") + &utils::unwrap_key("WEBSERVER_PORT");
 
-    let server = String::from("0.0.0.0:") + &utils::unwrap_key("WEBSERVER_PORT");
     println!("Running on http://{}", server);
+
     Iron::new(router).http(server).unwrap();
 }
