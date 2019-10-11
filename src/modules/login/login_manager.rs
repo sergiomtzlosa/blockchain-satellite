@@ -116,14 +116,13 @@ pub fn login_user(username: String, password: String) -> (String, String) {
 
     let rows = logged_user.len();
 
-    let mut token: String = "".to_string();
-    let mut user_id: String = "".to_string();
-
     if rows > 0 {
 
-        token = logged_user[0].token.to_string();
-        user_id = logged_user[0].user_id.to_string();
+        let token = logged_user[0].token.to_string();
+        let user_id = logged_user[0].user_id.to_string();
+
+	return (token, user_id);
     }
 
-    return (token, user_id);
+    return (to_string!(""), to_string!(""));
 }
