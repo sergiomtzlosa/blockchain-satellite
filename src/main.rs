@@ -3,13 +3,15 @@ extern crate router;
 extern crate dotenv;
 extern crate rustc_serialize;
 
-pub use blockchain_rust::modules::login::login;
+use blockchain_rust::modules::login::login;
+use blockchain_rust::modules::users::users;
+use blockchain_rust::connection_data::*;
 use dotenv::dotenv;
 use iron::prelude::*;
 use iron::status;
 use router::Router;
 
-#[macro_use] 
+#[macro_use]
 mod macros;
 pub mod utils;
 
@@ -27,23 +29,9 @@ fn login(req: &mut Request) -> IronResult<Response> {
 
 fn users(req: &mut Request) -> IronResult<Response> {
 
-    let http_method: &str = req.method.as_ref();
+    let response = users::manage_users(req);
 
-    if http_method.to_lowercase() == "get" {
-
-    } else if http_method.to_lowercase() == "post" {
-
-    } else if http_method.to_lowercase() == "put" {
-
-    } else if http_method.to_lowercase() == "delete" {
-
-    } else {
-
-    }
-
-    println!("Method {}", http_method);
-
-    Ok(Response::with((status::Ok, format!("{}{}\n", "OK ", http_method) )))
+    Ok(response)
 }
 
 fn values(req: &mut Request) -> IronResult<Response> {
@@ -85,7 +73,7 @@ fn main() {
     router.get(VALUES_SERVICE, values, "values");
     router.delete(VALUES_SERVICE, values, "values");
 
-    let server = to_string!("0.0.0.0:") + &utils::unwrap_key("WEBSERVER_PORT");
+    let server = to_string!("0.0.0.0:") + &**WEBSERVER_PORT;
 
     println!("");
     println!(" - Starting webserver with Rust...");

@@ -1,11 +1,10 @@
 extern crate mysql;
 
 pub use crate::macros;
-use crate::modules::login::connection_data::*;
+use crate::connection_data::*;
 use crate::modules::databases::connector_mysql::MySQLConnector;
 use crate::utils;
 use mysql as my;
-//use chrono::{NaiveDate, NaiveDateTime};
 
 #[derive(Debug, Clone, Copy)]
 struct User {
@@ -18,12 +17,6 @@ struct UserLogin {
     token: String,
     user_id: i32,
 }
-
-/*
-struct bbdd_time {
-    date: NaiveDateTime,
-}
-*/
 
 pub fn fill_values(host: &'static str, user: &'static str, password: &'static str, port:&'static str, database: &'static str) -> MySQLConnector{
 
