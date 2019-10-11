@@ -31,7 +31,7 @@ pub fn fill_values(host: &'static str, user: &'static str, password: &'static st
     return data_values;
 }
 
-pub fn connexion_values() -> HashMap<String, String> {
+pub fn connection_values() -> HashMap<String, String> {
 
     let user = utils::unwrap_key("MARIADB_USER");
     let password = utils::unwrap_key("MARIADB_PASSWORD");
@@ -54,7 +54,7 @@ pub fn connexion_values() -> HashMap<String, String> {
 
 pub fn enabled_user(username: String) -> bool {
 
-    let values: HashMap<String, String> = connexion_values();
+    let values: HashMap<String, String> = connection_values();
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
@@ -92,7 +92,7 @@ pub fn enabled_user(username: String) -> bool {
 
 pub fn login_user(username: String, password: String) -> (String, String) {
 
-    let values: HashMap<String, String> = connexion_values();
+    let values: HashMap<String, String> = connection_values();
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
