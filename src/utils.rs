@@ -12,8 +12,6 @@ use crypto::sha2::Sha256;
 use crypto::hmac::Hmac;
 use crypto::mac::Mac;
 use rustc_serialize::hex::ToHex;
-use rand::{OsRng, Rng};
-use std::iter::repeat;
 
 pub fn unwrap_key(key: &str) -> String {
 
@@ -51,13 +49,9 @@ pub fn create_json_output_payload(code: &str, message: &str) -> String {
 
 pub fn new_hash(message: &str) -> String {
 
-    let mut gen = OsRng::new().ok().expect("Failed to get OS random generator");
-
     let salted: String = String::from(message) + &unwrap_key("SALT_WORD").as_ref();
 
-    let mut hmac_key: Vec<u8> = repeat(0u8).take(32).collect();
-    gen.fill_bytes(hmac_key.as_mut_slice());
-
+    let hmac_key: Vec<u8> = Vec::new();
     let mut hmac = Hmac::new(Sha256::new(), &hmac_key);
     hmac.input(salted.as_bytes());
 

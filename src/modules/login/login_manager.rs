@@ -4,6 +4,7 @@ pub use super::super::databases::connector_mysql::MySQLConnector;
 use crate::utils;
 use std::collections::HashMap;
 use mysql as my;
+//use chrono::{NaiveDate, NaiveDateTime};
 
 #[derive(Clone, Copy)]
 struct User {
@@ -15,6 +16,12 @@ struct UserLogin {
     token: String,
     user_id: i32,
 }
+
+/*
+struct bbdd_time {
+    date: NaiveDateTime,
+}
+*/
 
 pub fn fill_values(host: &'static str, user: &'static str, password: &'static str, port:&'static str, database: &'static str) -> MySQLConnector{
 
@@ -89,9 +96,6 @@ pub fn login_user(username: String, password: String) -> (String, String) {
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", values.get("user").unwrap(), values.get("password").unwrap(), values.get("host").unwrap(), values.get("port").unwrap(), values.get("database").unwrap());
     let pool = my::Pool::new(conn_string).unwrap();
 
-    //let hash_password = String::from("06e242e1ee293f4d2f622376f03dd732ec8a725bb35bf73e553444664c3d64d5");//utils::new_hash(password.as_ref());
-
-    // Check has function
     let hash_password = String::from(utils::new_hash(password.as_ref()));
 
     println!("hash password: {}", hash_password);
