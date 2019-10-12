@@ -9,46 +9,48 @@ pub use crate::http_codes;
 
 pub fn manage_users(request: &mut Request) -> Response {
 
+    let str_response = utils::get_json_body(request);
+
     let http_method: &str = request.method.as_ref();
 
     if http_method.to_lowercase() == "get" {
 
-        perform_users_get();
+        perform_users_get(str_response)
 
-    } else if http_method.to_lowercase() == "post" {
+    } else if http_method.to_lowercase() == "post" || http_method.to_lowercase() == "put" {
 
-        perform_users_post();
-
-    } else if http_method.to_lowercase() == "put" {
-
-        perform_users_put();
+        perform_users_post(str_response)
 
     } else if http_method.to_lowercase() == "delete" {
 
-        perform_users_delete();
+        perform_users_delete(str_response)
 
     } else {
 
-        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
     }
-
-    //println!("Method {}", http_method);
-
-    Response::with((status::Ok, format!("{}{}\n", "OK ", http_method)))
 }
 
-fn perform_users_get() {
+fn perform_users_get(json_response: String) -> Response {
 
-}
+    let status_code: status::Status;
 
-fn perform_users_post() {
+    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
 
 }
 
-fn perform_users_put() {
+fn perform_users_post(json_response: String) -> Response {
+
+    let status_code: status::Status;
+
+    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
 
 }
 
-fn perform_users_delete() {
+fn perform_users_delete(json_response: String) -> Response {
+
+    let status_code: status::Status;
+
+    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
 
 }

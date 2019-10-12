@@ -29,6 +29,7 @@ pub fn create_response(status_value: status::Status, str_response: String) -> Re
 pub fn get_json_body(req: &mut Request) -> String {
 
     let mut payload = String::new();
+
     req.body.read_to_string(&mut payload).expect("Cannot parse JSON");
 
     return payload;
