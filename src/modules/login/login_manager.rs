@@ -2,7 +2,6 @@ extern crate mysql;
 
 pub use crate::macros;
 use crate::connection_data::*;
-use crate::modules::databases::connector_mysql::MySQLConnector;
 use crate::utils;
 use mysql as my;
 
@@ -16,13 +15,6 @@ struct UserLogin {
 
     token: String,
     user_id: i32,
-}
-
-pub fn fill_values(host: &'static str, user: &'static str, password: &'static str, port:&'static str, database: &'static str) -> MySQLConnector{
-
-    let data_values = MySQLConnector::new_init(host, user, password, port, database);
-
-    return data_values;
 }
 
 pub fn enabled_user(username: String) -> bool {

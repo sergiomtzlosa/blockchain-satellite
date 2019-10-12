@@ -7,7 +7,6 @@ struct bbdd_time {
     date: NaiveDateTime,
 }
 
-
 pub fn enabled_user(token: &String) -> bool {
 
     return true;
