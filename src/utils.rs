@@ -4,6 +4,7 @@ use std::env;
 use iron::status;
 use iron::prelude::*;
 use iron::mime::Mime;
+use iron::Headers;
 use std::io::Read;
 use std::collections::HashMap;
 use rustc_serialize::json;
@@ -45,6 +46,22 @@ pub fn create_json_output_payload(code: &str, message: &str) -> String {
     let output_payload = json::encode(&value_object).expect("Error encoding response");
 
     return output_payload;
+}
+
+pub fn get_header_with_name(name_header: String, headers: &Headers) -> String {
+
+    let mut value: String = to_string!("");
+
+    for header in headers.iter() {
+
+        if name_header.to_lowercase() == header.name().to_lowercase() {
+            
+            value = header.value_string();
+            break;
+        }
+    }
+
+    return value;
 }
 
 pub fn new_hash(message: &str) -> String {
