@@ -50,6 +50,37 @@ struct UserDelete {
     user_id: i32
 }
 
+#[derive(Debug, Clone, Copy)]
+struct UserId {
+    user_id: i32
+}
+
+fn check_userid_exists(user_id: &String) -> bool {
+
+    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
+    let pool = my::Pool::new(conn_string).unwrap();
+
+    let query: String = format!("SELECT user_id FROM sensors_users WHERE user_id = {} LIMIT 1", user_id);
+
+    let selected_user: Vec<UserId> = pool.prep_exec(query, ()).map(|result| {
+
+        result.map(|x| x.unwrap()).map(|row| {
+
+            let user_id = my::from_row(row);
+
+            UserId {
+                user_id: user_id
+            }
+        }).collect()
+    }).unwrap();
+
+    let rows = selected_user.len();
+
+    let userid_exists: bool = if rows > 0 { true } else { false };
+
+    return userid_exists;
+}
+
 fn username_password_exists(username: &String, password: &String) -> bool {
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
@@ -329,6 +360,37 @@ pub fn delete_user(user_id: &String, token: &String) -> (HashMap<String, String>
         return (result, status::InternalServerError);
     }
 
+    let mut check_number: bool = false;
+
+    let check_number_value = &user_id.parse::<i32>();
+
+    match check_number_value {
+        Ok(_) => {
+            check_number = true
+        },
+        Err(_) => {}
+    }
+
+    if check_number == false {
+
+        let mut result: HashMap<String, String> = HashMap::new();
+
+        result.insert(to_string!("message"), to_string!(messages::CANNOT_DELETE));
+        result.insert(to_string!("code"), to_string!(http_codes::HTTP_GENERIC_ERROR));
+
+        return (result, status::InternalServerError);
+    }
+
+    if check_userid_exists(&user_id) == false {
+
+        let mut result: HashMap<String, String> = HashMap::new();
+
+        result.insert(to_string!("message"), to_string!(messages::CANNOT_DELETE));
+        result.insert(to_string!("code"), to_string!(http_codes::HTTP_GENERIC_ERROR));
+
+        return (result, status::InternalServerError);
+    }
+
     let query = r"DELETE FROM sensors_users WHERE user_id = :username";
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
@@ -336,7 +398,7 @@ pub fn delete_user(user_id: &String, token: &String) -> (HashMap<String, String>
 
     let delete_user = vec![
         UserDelete {
-            user_id: user_id.parse::<i32>().unwrap(),
+            user_id: user_id.parse::<i32>().unwrap()
         }
     ];
 
