@@ -5,6 +5,7 @@ use iron::status;
 use iron::prelude::*;
 use iron::mime::Mime;
 use iron::Headers;
+use url::Url;
 use std::io::Read;
 use std::collections::HashMap;
 use rustc_serialize::json;
@@ -48,6 +49,13 @@ pub fn create_json_output_payload(code: &str, message: &str) -> String {
     return output_payload;
 }
 
+pub fn create_json_output_payload_object(object: HashMap<String, String>) -> String {
+
+    let output_payload = json::encode(&object).expect("Error encoding response");
+
+    return output_payload;
+}
+
 pub fn get_header_with_name(name_header: String, headers: &Headers) -> String {
 
     let mut value: String = to_string!("");
@@ -55,13 +63,23 @@ pub fn get_header_with_name(name_header: String, headers: &Headers) -> String {
     for header in headers.iter() {
 
         if name_header.to_lowercase() == header.name().to_lowercase() {
-            
+
             value = header.value_string();
             break;
         }
     }
 
     return value;
+}
+
+pub fn get_param_url_with_name(name_param: &str, url: &str) -> String {
+
+    let parsed_url = Url::parse(url).unwrap();
+    let query_params: HashMap<String, String> = parsed_url.query_pairs().into_owned().collect();
+
+    let value = query_params.get(name_param).unwrap();
+
+    return to_string!(value);
 }
 
 pub fn new_hash(message: &str) -> String {

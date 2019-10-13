@@ -6,8 +6,8 @@ use crate::utils;
 use mysql as my;
 
 #[derive(Debug, Clone, Copy)]
-struct User {
-    enabled: bool
+pub struct User {
+    pub enabled: bool
 }
 
 #[derive(Debug)]
@@ -38,19 +38,14 @@ pub fn enabled_user(username: String) -> bool {
 
     let rows = selected_user.len();
 
-    let mut user_valid: bool = false;
+    let mut user_enabled: bool = false;
 
     if rows > 0 {
 
-        let user_enabled: bool = selected_user[0].enabled;
-
-        if user_enabled {
-
-            user_valid = true;
-        }
+        user_enabled = selected_user[0].enabled;
     }
 
-    return user_valid;
+    return user_enabled;
 }
 
 pub fn login_user(username: String, password: String) -> (String, String) {
@@ -83,7 +78,7 @@ pub fn login_user(username: String, password: String) -> (String, String) {
         let token = object.token.to_string();
         let user_id = object.user_id.to_string();
 
-	return (token, user_id);
+	       return (token, user_id);
     }
 
     return (to_string!(""), to_string!(""));

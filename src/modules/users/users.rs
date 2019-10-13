@@ -2,6 +2,8 @@ extern crate iron;
 
 use iron::prelude::*;
 use iron::status;
+use rustc_serialize::json;
+use std::collections::HashMap;
 use crate::modules::users::users_manager;
 
 pub use crate::messages;
@@ -15,14 +17,10 @@ pub fn manage_users(request: &mut Request) -> Response {
 
     let token: String = utils::get_header_with_name(to_string!("Token"), &request.headers);
 
-    println!("{}", token);
-    
     if token.len() == 0 {
 
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
     }
-
-    let http_method: &str = request.method.as_ref();
 
     if users_manager::enabled_user(&token) {
 
@@ -34,50 +32,97 @@ pub fn manage_users(request: &mut Request) -> Response {
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::TOKEN_EXPIRED));
     }
 
-// let username = $decoded['username'];
-// let password = $decoded['password'];
-// let name = $decoded['name'];
-// let surname = $decoded['surname'];
-// let description = $decoded['description'];
+    let http_method: &str = request.method.as_ref();
+
+    let status_code;
+    let out;
 
     if http_method.to_lowercase() == "get" {
 
-        perform_users_get(str_response)
+        let (str_msg, str_code, code) = perform_users_get(token, &request);
+        status_code = code;
 
-    } else if http_method.to_lowercase() == "post" || http_method.to_lowercase() == "put" {
-
-        perform_users_post(str_response)
-
-    } else if http_method.to_lowercase() == "delete" {
-
-        perform_users_delete(str_response)
+        out = utils::create_json_output_payload(str_code.as_ref(), str_msg.as_ref())
 
     } else {
 
-        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
+        out = match json::decode(&str_response) {
+
+            Ok(incoming)  => {
+
+                let map: HashMap<String, String> = incoming;
+
+                if http_method.to_lowercase() == "post" || http_method.to_lowercase() == "put" {
+
+                    let (result_map, code) = perform_users_post(token, http_method.to_lowercase(), &map);
+                    status_code = code;
+
+                    json::encode(&result_map).expect("Error encoding response")
+
+                } else if http_method.to_lowercase() == "delete" {
+
+                    let (result_map, code) = perform_users_delete(token, &map);
+                    status_code = code;
+
+                    json::encode(&result_map).expect("Error encoding response")
+
+                } else {
+
+                    status_code = status::InternalServerError;
+                    utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
+                }
+
+            }, Err(_) => {
+
+                status_code = status::InternalServerError;
+                utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
+            }
+        };
     }
+
+    utils::create_response(status_code, out)
 }
 
-fn perform_users_get(json_response: String) -> Response {
+fn perform_users_post(token: String, operation: String, map: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
 
-    let status_code: status::Status;
+    let username: String = map.get("username").unwrap().to_string();
+    let password: String = map.get("password").unwrap().to_string();
+    let name: String = map.get("name").unwrap().to_string();
+    let surname: String = map.get("surname").unwrap().to_string();
+    let description: String = map.get("description").unwrap().to_string();
 
-    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
+    if operation.to_lowercase() == "put" {
 
+        let user_id: String = map.get("user_id").unwrap().to_string();
+
+         users_manager::update_user(&username, &password, &name, &surname, &description, &user_id);
+    }
+
+    if  operation.to_lowercase() == "post" {
+
+        let is_admin: String = map.get("admin").unwrap().to_string();
+
+        return users_manager::insert_new_user(&username, &password, &name, &surname, &description, &is_admin, &token);
+    }
+
+    return (HashMap::new(), status::Ok);
 }
 
-fn perform_users_post(json_response: String) -> Response {
+fn perform_users_delete(token: String, map: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
 
-    let status_code: status::Status;
+    let user_id: String = map.get("user_id").unwrap().to_string();
 
-    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
-
+    return users_manager::delete_user(&user_id, &token);
 }
 
-fn perform_users_delete(json_response: String) -> Response {
+fn perform_users_get(token: String, req: &Request) -> (String, String, status::Status) {
 
-    let status_code: status::Status;
+    let url_str = req.url.as_ref().as_str();
+    let user_id = utils::get_param_url_with_name("user_id", url_str);
 
-    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR))
+    println!("user_id value: {}", user_id);
 
+    users_manager::select_user(&user_id, &token);
+
+    return (to_string!(""), to_string!(""), status::Ok);
 }

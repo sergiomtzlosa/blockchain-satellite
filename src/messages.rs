@@ -23,3 +23,5 @@ pub static USER_DISABLED: &str = "User disabled in system";
 pub static BLOCK_ID_NOT_SET: &str = "Block ID not set";
 
 pub static BLOCKCHAIN_DELETED: &str = "Blockchain deleted";
+
+pub static USER_DELETED: &str = "User deleted in system";
