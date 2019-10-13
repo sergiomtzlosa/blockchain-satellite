@@ -312,8 +312,9 @@ pub fn insert_new_user(username: &String, password: &String, name: &String, surn
     return (map, status::InternalServerError);
 }
 
-pub fn update_user(username: &String, password: &String, name: &String, surname: &String, description: &String, user_id: &String) {
+pub fn update_user(username: &String, password: &String, name: &String, surname: &String, description: &String, user_id: &String) -> (HashMap<String, String>, status::Status) {
 
+    return (HashMap::new(), status::Ok);
 }
 
 pub fn delete_user(user_id: &String, token: &String) -> (HashMap<String, String>, status::Status) {
@@ -367,6 +368,6 @@ pub fn select_user(user_id: &String, token: &String)  -> (HashMap<String, String
 
         return (result, status::InternalServerError);
     }
-    
+
     return (HashMap::new(), status::Ok);
 }

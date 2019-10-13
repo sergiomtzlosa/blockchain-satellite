@@ -39,10 +39,10 @@ pub fn manage_users(request: &mut Request) -> Response {
 
     if http_method.to_lowercase() == "get" {
 
-        let (str_msg, str_code, code) = perform_users_get(token, &request);
+        let (result_map, code) = perform_users_get(token, &request);
         status_code = code;
 
-        out = utils::create_json_output_payload(str_code.as_ref(), str_msg.as_ref())
+        out = json::encode(&result_map).expect("Error encoding response")
 
     } else {
 
@@ -115,14 +115,12 @@ fn perform_users_delete(token: String, map: &HashMap<String, String>) -> (HashMa
     return users_manager::delete_user(&user_id, &token);
 }
 
-fn perform_users_get(token: String, req: &Request) -> (String, String, status::Status) {
+fn perform_users_get(token: String, req: &Request) -> (HashMap<String, String>, status::Status) {
 
     let url_str = req.url.as_ref().as_str();
     let user_id = utils::get_param_url_with_name("user_id", url_str);
 
     println!("user_id value: {}", user_id);
 
-    users_manager::select_user(&user_id, &token);
-
-    return (to_string!(""), to_string!(""), status::Ok);
+    return users_manager::select_user(&user_id, &token);
 }
