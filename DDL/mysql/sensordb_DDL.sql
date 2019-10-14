@@ -58,14 +58,27 @@ INSERT INTO `sensors_tokens` (`token_user_id`, `token`, `creation_ts_token`, `ex
 VALUES (2, '7b774d0765d011e8a96100089be8caec', CURRENT_TIMESTAMP, 0);
 
 -- Insert a new token when user inserts new data
-DROP TRIGGER IF EXISTS `sensors`.`trigger_insert_sensor_tokensnew_user`;
+DROP TRIGGER IF EXISTS `sensors`.`trigger_insert_sensor_tokens`;
 DROP PROCEDURE IF EXISTS `sensors`.`insert_new_row_sensors_tokens`;
 
 DELIMITER //
 CREATE TRIGGER `sensors`.`trigger_insert_sensor_tokens`
-AFTER INSERT ON `sensors`.`sensors_users` FOR EACH ROW
+BEFORE INSERT ON `sensors`.`sensors_users` FOR EACH ROW
     BEGIN
-      CALL `sensors`.`insert_new_row_sensors_tokens`(NEW.`user_id`);
+      SET @next_user_id = (SELECT user_id + 1 FROM `sensors`.`sensors_users` ORDER BY user_id DESC LIMIT 1);
+      CALL `sensors`.`insert_new_row_sensors_tokens`(@next_user_id);
+      SET  NEW.`ts_last_update` = CURRENT_TIMESTAMP;
+    END; //
+DELIMITER ;
+
+-- Update modification date for user update
+DROP TRIGGER IF EXISTS `sensors`.`trigger_before_update_sensor_user`;
+
+DELIMITER //
+CREATE TRIGGER `sensors`.`trigger_before_sensor_users`
+BEFORE UPDATE ON `sensors`.`sensors_users` FOR EACH ROW
+    BEGIN
+      SET  NEW.`ts_last_update` = CURRENT_TIMESTAMP;
     END; //
 DELIMITER ;
 
@@ -73,12 +86,31 @@ DELIMITER //
 CREATE PROCEDURE `sensors`.`insert_new_row_sensors_tokens`(IN new_user_id INT(11))
 MODIFIES SQL DATA
     BEGIN
-		 SET @token_id := new_user_id;
-		 SET @token := (SELECT REPLACE(LOWER(LEFT(UUID(), 110)), '-', ''));
+     SET @token_id := new_user_id;
+     SET @token := (SELECT REPLACE(LOWER(LEFT(UUID(), 110)), '-', ''));
      SET @date_now := NOW();
 
      INSERT INTO `sensors`.`sensors_tokens` (`token_user_id`, `token`, `creation_ts_token`)
      VALUES (@token_id, @token, @date_now);
+
+    END; //
+DELIMITER ;
+
+-- Update user data
+DELIMITER //
+CREATE PROCEDURE `sensors`.`update_user_data`(IN username VARCHAR(150), IN password VARCHAR(150), IN name VARCHAR(150), IN surname VARCHAR(150), IN description VARCHAR(150), IN user_id INT(11))
+MODIFIES SQL DATA
+    BEGIN
+
+     SET @temp_username = username;
+     SET @temp_password = password;
+     SET @temp_name = name;
+     SET @temp_surname = surname;
+     SET @temp_description = description;
+     SET @temp_user_id = user_id;
+
+     UPDATE `sensors`.`sensors_users` SET `username` = @temp_username, `password` = @temp_password, `name` = @temp_name, `surname` = @temp_surname, `description` = @temp_description 
+     WHERE `sensors_users`.`user_id` = @temp_user_id;
 
     END; //
 DELIMITER ;
@@ -93,7 +125,7 @@ AFTER DELETE ON `sensors`.`sensors_users` FOR EACH ROW
 
       SET @token_id := OLD.`user_id`;
 
-     	DELETE FROM `sensors`.`sensors_tokens`
+      DELETE FROM `sensors`.`sensors_tokens`
       WHERE `sensors_tokens`.`token_user_id` = @token_id;
 
     END; //
@@ -108,7 +140,7 @@ MODIFIES SQL DATA
     BEGIN
 
      SET @temp_username := username;
-		 SET @temp_password := password;
+     SET @temp_password := password;
 
      SET @temp_user_id := (SELECT user_id FROM `sensors`.`sensors_users`
                            WHERE `sensors_users`.`username` = @temp_username AND `sensors_users`.`password` = @temp_password LIMIT 1);

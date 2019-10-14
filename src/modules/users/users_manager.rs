@@ -7,7 +7,6 @@ use crate::utils;
 use mysql as my;
 use mysql::params;
 use iron::status;
-use chrono::{NaiveDateTime, Utc};
 use std::collections::HashMap;
 pub use crate::messages;
 pub use crate::http_codes;
@@ -35,8 +34,17 @@ struct UserInsert {
     name: String,
     surname: String,
     description: String,
-    temp_date: NaiveDateTime,
     admin: bool
+}
+
+#[derive(Debug, Clone)]
+struct UserUpdate {
+    username: String,
+    hash_password: String,
+    name: String,
+    surname: String,
+    description: String,
+    user_id: i32
 }
 
 #[derive(Debug, Clone)]
@@ -53,6 +61,19 @@ struct UserDelete {
 #[derive(Debug, Clone, Copy)]
 struct UserId {
     user_id: i32
+}
+
+#[derive(Debug, Clone)]
+struct UserFullData {
+    user_id: i32,
+    username: String,
+    password: String,
+    name: String,
+    surname: String,
+    description: String,
+    token: String,
+    enabled: bool,
+    is_admin: bool
 }
 
 fn check_userid_exists(user_id: &String) -> bool {
@@ -284,12 +305,10 @@ pub fn insert_new_user(username: &String, password: &String, name: &String, surn
       }
     }
 
-    let temp_date = Utc::now().naive_local();
-
     let hash_password = utils::new_hash(password);
 
-    let query_head = r"INSERT INTO sensors_users (username, password, name, surname, description, ts_last_update, is_admin) ";
-    let query_tail = "VALUES (:username, :hash_password, :name, :surname, :description, :temp_date, :admin)";
+    let query_head = r"INSERT INTO sensors_users (username, password, name, surname, description, is_admin) ";
+    let query_tail = "VALUES (:username, :hash_password, :name, :surname, :description, :admin)";
 
     let query_final = to_string!(query_head) + &query_tail;
 
@@ -300,7 +319,6 @@ pub fn insert_new_user(username: &String, password: &String, name: &String, surn
             name: to_string!(name),
             surname: to_string!(surname),
             description: to_string!(description),
-            temp_date: temp_date,
             admin: admin
         }
     ];
@@ -318,7 +336,6 @@ pub fn insert_new_user(username: &String, password: &String, name: &String, surn
             "name" => &user.name,
             "surname" => &user.surname,
             "description" => &user.description,
-            "temp_date" => &user.temp_date,
             "admin" => &user.admin,
         }).unwrap();
     }
@@ -345,7 +362,42 @@ pub fn insert_new_user(username: &String, password: &String, name: &String, surn
 
 pub fn update_user(username: &String, password: &String, name: &String, surname: &String, description: &String, user_id: &String) -> (HashMap<String, String>, status::Status) {
 
-    return (HashMap::new(), status::Ok);
+    if username.len() == 0 || password.len() == 0 || name.len() == 0 || surname.len() == 0 || description.len() == 0 || user_id.len() == 0 {
+
+        let mut result: HashMap<String, String> = HashMap::new();
+
+        result.insert(to_string!("message"), to_string!(messages::ONE_OR_MORE_PARAMETERS_EMPTY));
+        result.insert(to_string!("code"), to_string!(http_codes::HTTP_GENERIC_ERROR));
+
+        return (result, status::InternalServerError);
+    }
+
+    if !utils::is_numeric(user_id) {
+
+        let mut result: HashMap<String, String> = HashMap::new();
+
+        result.insert(to_string!("message"), to_string!(messages::USER_ID_NOT_NUMBER));
+        result.insert(to_string!("code"), to_string!(http_codes::HTTP_GENERIC_ERROR));
+
+        return (result, status::InternalServerError);
+
+    }
+
+    let hash_password = utils::new_hash(password);
+
+    let query = format!("CALL update_user_data('{}', '{}', '{}', '{}', '{}', {})", username, hash_password, name, surname, description, user_id.parse::<i32>().unwrap());
+
+    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
+    let pool = my::Pool::new(conn_string).unwrap();
+
+    pool.prep_exec(query, ()).unwrap();
+
+    let mut map: HashMap<String, String> = HashMap::new();
+
+    map.insert(to_string!("message"), to_string!(messages::USER_UPDATED));
+    map.insert(to_string!("code"), to_string!(http_codes::HTTP_OK));
+
+    return (map, status::Ok);
 }
 
 pub fn delete_user(user_id: &String, token: &String) -> (HashMap<String, String>, status::Status) {
@@ -360,18 +412,7 @@ pub fn delete_user(user_id: &String, token: &String) -> (HashMap<String, String>
         return (result, status::InternalServerError);
     }
 
-    let mut check_number: bool = false;
-
-    let check_number_value = &user_id.parse::<i32>();
-
-    match check_number_value {
-        Ok(_) => {
-            check_number = true
-        },
-        Err(_) => {}
-    }
-
-    if check_number == false {
+    if !utils::is_numeric(&user_id) {
 
         let mut result: HashMap<String, String> = HashMap::new();
 
@@ -431,5 +472,75 @@ pub fn select_user(user_id: &String, token: &String)  -> (HashMap<String, String
         return (result, status::InternalServerError);
     }
 
-    return (HashMap::new(), status::Ok);
+     if check_userid_exists(&user_id) == false {
+
+        let mut result: HashMap<String, String> = HashMap::new();
+
+        result.insert(to_string!("message"), to_string!(messages::USERNAME_OR_PASSWORD_NOT_EXISTS));
+        result.insert(to_string!("code"), to_string!(http_codes::HTTP_GENERIC_ERROR));
+
+        return (result, status::InternalServerError);
+    }
+
+    let mut query = to_string!("SELECT user_id, username, password, name, surname, description, token, enabled, is_admin  ");
+    query = query + &format!("FROM sensors_users AS s1 INNER JOIN sensors_tokens AS s2 ON s1.user_id = s2.token_user_id WHERE s1.user_id = {} LIMIT 1", user_id);
+
+    let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
+    let pool = my::Pool::new(conn_string).unwrap();
+
+    let selected_user: Vec<UserFullData> = pool.prep_exec(query, ()).map(|result| {
+
+        result.map(|x| x.unwrap()).map(|row| {
+
+            let (user_id, username, password, name, surname, description, token, enabled, is_admin) = my::from_row(row);
+
+            UserFullData {
+                user_id: user_id,
+                username: username,
+                password: password,
+                name: name,
+                surname: surname,
+                description: description,
+                token: token,
+                enabled: enabled,
+                is_admin: is_admin
+            }
+        }).collect()
+    }).unwrap();
+
+    let rows = selected_user.len();
+
+    if rows > 0 {
+
+       let user: &UserFullData = &selected_user[0];
+
+       let mut result: HashMap<String, String> = HashMap::new();
+
+       result.insert(to_string!("username"), to_string!(&user.username));
+       result.insert(to_string!("password"),  to_string!(&user.password));
+       result.insert(to_string!("name"),  to_string!(&user.name));
+       result.insert(to_string!("surname"),  to_string!(&user.surname));
+       result.insert(to_string!("description"),  to_string!(&user.description));
+       result.insert(to_string!("token"),  to_string!(&user.token));
+
+       if is_token_admin(token) {
+
+          result.insert(to_string!("user_id"), user.user_id.to_string());
+
+          let enabled_str: String = if user.enabled {  to_string!("true") } else { to_string!("false") };
+          result.insert(to_string!("enabled"), enabled_str);
+
+          let is_admin_str: String = if user.is_admin {  to_string!("true") } else { to_string!("false") };
+          result.insert(to_string!("is_admin"), is_admin_str);
+       }
+
+       return (result, status::Ok);
+    }
+
+    let mut result: HashMap<String, String> = HashMap::new();
+
+    result.insert(to_string!("message"), to_string!(messages::DATA_NOT_FOUND));
+    result.insert(to_string!("code"), to_string!(http_codes::HTTP_OK));
+
+    return (result, status::Ok);
 }

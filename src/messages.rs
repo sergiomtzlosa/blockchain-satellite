@@ -25,3 +25,11 @@ pub static BLOCK_ID_NOT_SET: &str = "Block ID not set";
 pub static BLOCKCHAIN_DELETED: &str = "Blockchain deleted";
 
 pub static USER_DELETED: &str = "User deleted in system";
+
+pub static USERNAME_OR_PASSWORD_NOT_EXISTS: &str = "Username or password not exists";
+
+pub static ONE_OR_MORE_PARAMETERS_EMPTY: &str = "One or more parameters are empty";
+
+pub static USER_UPDATED: &str = "User updated";
+
+pub static USER_ID_NOT_NUMBER: &str = "User ID id not a number";

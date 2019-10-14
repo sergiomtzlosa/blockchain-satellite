@@ -95,7 +95,7 @@ fn perform_users_post(token: String, operation: String, map: &HashMap<String, St
 
         let user_id: String = map.get("user_id").unwrap().to_string();
 
-         users_manager::update_user(&username, &password, &name, &surname, &description, &user_id);
+         return users_manager::update_user(&username, &password, &name, &surname, &description, &user_id);
     }
 
     if  operation.to_lowercase() == "post" {
@@ -119,8 +119,6 @@ fn perform_users_get(token: String, req: &Request) -> (HashMap<String, String>, 
 
     let url_str = req.url.as_ref().as_str();
     let user_id = utils::get_param_url_with_name("user_id", url_str);
-
-    println!("user_id value: {}", user_id);
 
     return users_manager::select_user(&user_id, &token);
 }

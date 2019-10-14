@@ -94,3 +94,18 @@ pub fn new_hash(message: &str) -> String {
 
     return result;
 }
+
+pub fn is_numeric(str_value: &str) -> bool {
+
+    let mut check_number = false;
+    let check_number_value = str_value.parse::<i32>();
+
+    match check_number_value {
+        Ok(_) => {
+            check_number = true
+        },
+        Err(_) => {}
+    }
+
+    return check_number;
+}
