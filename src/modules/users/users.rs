@@ -10,7 +10,6 @@ pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
 
-//md5: https://docs.rs/md5/0.6.1/md5/
 pub fn manage_users(request: &mut Request) -> Response {
 
     let str_response = utils::get_json_body(request);

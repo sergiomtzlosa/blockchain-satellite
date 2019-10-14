@@ -13,6 +13,9 @@ use crypto::sha2::Sha256;
 use crypto::hmac::Hmac;
 use crypto::mac::Mac;
 use rustc_serialize::hex::ToHex;
+use crypto::digest::Digest;
+use crypto::md5::Md5;
+use std::fs;
 
 pub fn unwrap_key(key: &str) -> String {
 
@@ -108,4 +111,28 @@ pub fn is_numeric(str_value: &str) -> bool {
     }
 
     return check_number;
+}
+
+pub fn md5_file(file_path: &str) -> String {
+
+    let file_contents_str: String = fs::read_to_string(file_path).unwrap();
+
+    let mut md5_object = Md5::new();
+    md5_object.input_str(&file_contents_str);
+
+    let result: String = md5_object.result_str();
+
+    return result;
+}
+
+pub fn sha256_file(file_path: &str) -> String {
+
+    let file_contents_str: String = fs::read_to_string(file_path).unwrap();
+
+    let mut sha = Sha256::new();
+    sha.input_str(&file_contents_str);
+
+    let result: String = sha.result_str();
+
+    return result;
 }

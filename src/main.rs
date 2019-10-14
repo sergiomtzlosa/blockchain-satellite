@@ -5,10 +5,10 @@ extern crate rustc_serialize;
 
 use blockchain_rust::modules::login::login;
 use blockchain_rust::modules::users::users;
+use blockchain_rust::modules::blockchain::blockchain;
 use blockchain_rust::connection_data::*;
 use dotenv::dotenv;
 use iron::prelude::*;
-use iron::status;
 use router::Router;
 
 #[macro_use]
@@ -36,23 +36,9 @@ fn users(req: &mut Request) -> IronResult<Response> {
 
 fn values(req: &mut Request) -> IronResult<Response> {
 
-    let http_method: &str = req.method.as_ref();
+    let response = blockchain::manage_blockchain(req);
 
-    if http_method.to_lowercase() == "post" {
-
-    } else if http_method.to_lowercase() == "put" {
-
-    } else if http_method.to_lowercase() == "get" {
-
-    } else if http_method.to_lowercase() == "delete" {
-
-    } else {
-
-    }
-
-    println!("Method {}", http_method);
-
-    Ok(Response::with((status::Ok, "OK")))
+    Ok(response)
 }
 
 fn main() {
