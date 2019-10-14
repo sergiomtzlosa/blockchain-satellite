@@ -58,7 +58,7 @@ fn data_operation(encrypt: bool, text_str: &str) -> String {
 
     let output: String = format!("{:?}", String::from_utf8_lossy(&result));
 
-    println!("{}", output);
+    // println!("{}", output);
 
     return output;
 }
