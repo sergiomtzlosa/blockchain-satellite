@@ -5,15 +5,17 @@ use rustc_serialize::json;
 
 pub use crate::utils;
 
+static FILE_SEED: &str = "/etc/passwd";
+
 fn get_key() -> String {
 
-    return utils::md5_file("/etc/passwd");
+    return utils::md5_file(FILE_SEED);
 }
 
 fn get_vector() -> String {
 
-    let md5_hash: String = utils::md5_file("/etc/passwd");
-    let sha256_hash: String = utils::sha256_file("/etc/passwd");
+    let md5_hash: String = utils::md5_file(FILE_SEED);
+    let sha256_hash: String = utils::sha256_file(FILE_SEED);
 
     let chunk_md5 = &md5_hash[0..8];
     let chunk_sha256 = &sha256_hash[0..8];
