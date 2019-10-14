@@ -22,7 +22,5 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
 
     }
 
-    println!("Method {}", http_method);
-
     utils::create_response(status::Ok, to_string!(""))
 }
