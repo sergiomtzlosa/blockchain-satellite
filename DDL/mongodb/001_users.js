@@ -42,14 +42,13 @@ if (authResult) {
       user: "data_api",
       pwd: "data_api",
       roles: [
-         { role: "dbOwner", db: "sensors" },
-         { role: "dbOwner", db: "sensors_arduino" }
+         { role: "dbOwner", db: "sensors" }
       ]
     }
   );
 
   print("User data_api created!!!")
-  
+
 } else {
 
     print("Fail authentication as root!!!")
