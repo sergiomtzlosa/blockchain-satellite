@@ -1,6 +1,7 @@
 extern crate openssl;
 
 use openssl::symm::*;
+use openssl::symm::Mode;
 use rustc_serialize::json;
 
 pub use crate::utils;
@@ -36,26 +37,24 @@ fn data_operation(encrypt: bool, text_str: &str) -> String {
     // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
     let iv: &str = &utils::sha256_string(&secret_iv)[0..16];
 
-    let t = Cipher::aes_256_cbc();
-
-    let mut deco_object;
+    let mut mode_operation = Mode::Decrypt;
 
     if encrypt {
 
-        deco_object = Crypter::new(t, Mode::Encrypt, &key.as_bytes(), Some(&iv.as_bytes())).unwrap();
-
-    } else {
-
-        deco_object = Crypter::new(t, Mode::Decrypt, &key.as_bytes(), Some(&iv.as_bytes())).unwrap();
+        mode_operation = Mode::Encrypt;
     }
 
-    let mut result = vec![0; text_str.len() + t.block_size()];
+    let cipher = Cipher::aes_256_cbc();
+
+    let mut deco_object = Crypter::new(cipher, mode_operation, &key.as_bytes(), Some(&iv.as_bytes())).unwrap();
+
+    let mut result = vec![0; text_str.len() + cipher.block_size()];
     deco_object.update(&text_str.as_bytes(), &mut result).unwrap();
 
     let len = deco_object.finalize(&mut result).unwrap();
     result.truncate(len);
 
-    println!("{:?}", result);
+    // println!("{:?}", result);
 
     let output: String = format!("{:?}", String::from_utf8_lossy(&result));
 
