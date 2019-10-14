@@ -127,6 +127,6 @@ curl -X POST \
 
 ## Configuration
 
-Set your connection parameters for MySQL/MariaDB and Mongo on **.env ** file.
+Set your connection parameters for MySQL/MariaDB and Mongo on **.env** file.
 
 ENJOY!
