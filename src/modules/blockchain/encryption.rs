@@ -1,7 +1,6 @@
 extern crate openssl;
 
-use openssl::symm::*;
-use openssl::symm::Mode;
+use openssl::symm::{encrypt, decrypt, Cipher};
 use rustc_serialize::json;
 
 pub use crate::utils;
@@ -26,7 +25,7 @@ fn get_vector() -> String {
     return final_str;
 }
 
-fn data_operation(encrypt: bool, text_str: &str) -> String {
+fn data_operation(encrypt_option: bool, text_str: &str) -> String {
 
     let secret_key: String = get_key();
     let secret_iv: String = get_vector();
@@ -37,40 +36,34 @@ fn data_operation(encrypt: bool, text_str: &str) -> String {
     // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
     let iv: &str = &utils::sha256_string(&secret_iv)[0..16];
 
-    let mut mode_operation = Mode::Decrypt;
-
-    if encrypt {
-
-        mode_operation = Mode::Encrypt;
-    }
+    let code_object;
 
     let cipher = Cipher::aes_256_cbc();
 
-    let mut deco_object = Crypter::new(cipher, mode_operation, &key.as_bytes(), Some(&iv.as_bytes())).unwrap();
+    if encrypt_option {
 
-    let mut result = vec![0; text_str.len() + cipher.block_size()];
-    deco_object.update(&text_str.as_bytes(), &mut result).unwrap();
+        code_object = encrypt(cipher, &key.as_bytes(), Some(&iv.as_bytes()), text_str.as_bytes()).unwrap();
+        
+    } else {
 
-    let len = deco_object.finalize(&mut result).unwrap();
-    result.truncate(len);
+        code_object = decrypt(cipher, &key.as_bytes(), Some(&iv.as_bytes()), text_str.as_bytes()).unwrap();
+    }
 
-    // println!("{:?}", result);
-
-    let output: String = format!("{:?}", String::from_utf8_lossy(&result));
+    let output: String = format!("{:?}", String::from_utf8_lossy(&code_object));
 
     // println!("{}", output);
 
     return output;
 }
 
-pub fn decrypt(str_content: &str) -> String {
+pub fn decrypt_operation(str_content: &str) -> String {
 
     let dec_operation = data_operation(false, str_content);
 
     return json::decode(&dec_operation).expect("");
 }
 
-pub fn encrypt(str_content: &str) -> String {
+pub fn encrypt_operation(str_content: &str) -> String {
 
     return data_operation(true, str_content);
 }
