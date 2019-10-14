@@ -136,3 +136,23 @@ pub fn sha256_file(file_path: &str) -> String {
 
     return result;
 }
+
+pub fn md5_string(str_value: &str) -> String {
+
+    let mut md5_object = Md5::new();
+    md5_object.input_str(&str_value);
+
+    let result: String = md5_object.result_str();
+
+    return result;
+}
+
+pub fn sha256_string(str_value: &str) -> String {
+
+    let mut sha = Sha256::new();
+    sha.input_str(&str_value);
+
+    let result: String = sha.result_str();
+
+    return result;
+}
