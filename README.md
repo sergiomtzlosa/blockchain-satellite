@@ -11,7 +11,7 @@ Blockchain written in Rust for low-orbit satellites
 
 ## MySQL tune-up
 
-The users management use MySQL as main engine.
+The users management uses MySQL as main engine.
 
 Execute the script present in **DDL/mysql/sensordb_DDL.sql** to fill the tables, structure, triggers and procedures:
 
