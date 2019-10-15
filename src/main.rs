@@ -2,17 +2,21 @@ extern crate iron;
 extern crate router;
 extern crate dotenv;
 extern crate rustc_serialize;
+extern crate crypto;
 
 use blockchain_rust::modules::login::login;
 use blockchain_rust::modules::users::users;
 use blockchain_rust::modules::blockchain::blockchain;
+// use blockchain_rust::modules::blockchain::encryption;
 use blockchain_rust::connection_data::*;
 use dotenv::dotenv;
 use iron::prelude::*;
 use router::Router;
+use std::str;
 
 #[macro_use]
 mod macros;
+
 pub mod utils;
 
 static USER_SERVICE: &str = "/api/users";
@@ -61,9 +65,30 @@ fn main() {
 
     let server = to_string!("0.0.0.0:") + &**WEBSERVER_PORT;
 
+    // encryption_test();
+
     println!("");
     println!(" - Starting webserver with Rust...");
     println!(" - Webserver running on http://{}", server);
 
     Iron::new(router).http(server).unwrap();
 }
+
+// Encryption test
+// fn encryption_test() {
+//
+//     let message = "hello world!";
+//
+//     let encrypted_data: String = encryption::encrypt_operation(&message);
+//
+//     println!("");
+//     println!("Encryption test");
+//     println!("--------------");
+//     println!("");
+//
+//     println!("{:?}", &encrypted_data);
+//
+//     let decrypted_data: Vec<u8> = encryption::decrypt_operation(&encrypted_data);
+//
+//     println!("decoded message: {}", String::from_utf8_lossy(&decrypted_data));
+// }
