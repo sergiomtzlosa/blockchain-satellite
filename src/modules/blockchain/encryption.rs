@@ -1,3 +1,4 @@
+extern crate base64;
 
 pub use crate::utils;
 
@@ -59,4 +60,14 @@ pub fn encrypt_operation(message: &str) -> Vec<u8> {
     let (key, iv) = encryption_elements();
 
     return encryption_helpers::encrypt(message.as_bytes(), key.as_bytes(), iv.as_bytes()).ok().unwrap();
+}
+
+pub fn base64_encode(bytes_array: &Vec<u8>)-> String {
+
+    return hex::encode(&bytes_array);
+}
+
+pub fn base64_decode(string_encoded: &str)-> Vec<u8> {
+
+    return hex::decode(string_encoded).ok().unwrap();
 }

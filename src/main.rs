@@ -13,7 +13,6 @@ use dotenv::dotenv;
 use iron::prelude::*;
 use router::Router;
 use std::str;
-use std::fs;
 
 #[macro_use]
 mod macros;
@@ -88,11 +87,11 @@ fn encryption_test() {
 
     println!("{:?}", &encrypted_data);
 
-    // let temp_str: String = String::from_utf8_lossy(&encrypted_data).to_string();
+    let hex_encoded: String = encryption::base64_encode(&encrypted_data);
 
-    fs::write("/tmp/foo", encrypted_data).expect("Unable to write file");
+    println!("{:?}", hex_encoded);
 
-    let data = fs::read("/tmp/foo").expect("Unable to read file");
+    let data: Vec<u8> = encryption::base64_decode(&hex_encoded);
 
     println!("{:?}", data);
 
