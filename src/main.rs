@@ -6,10 +6,13 @@ extern crate rustc_serialize;
 use blockchain_rust::modules::login::login;
 use blockchain_rust::modules::users::users;
 use blockchain_rust::modules::blockchain::blockchain;
+use blockchain_rust::modules::blockchain::encryption;
 use blockchain_rust::connection_data::*;
 use dotenv::dotenv;
 use iron::prelude::*;
 use router::Router;
+use std::str;
+use std::fs;
 
 #[macro_use]
 mod macros;
@@ -61,9 +64,37 @@ fn main() {
 
     let server = to_string!("0.0.0.0:") + &**WEBSERVER_PORT;
 
+    encryption_test();
+
     println!("");
     println!(" - Starting webserver with Rust...");
     println!(" - Webserver running on http://{}", server);
 
     Iron::new(router).http(server).unwrap();
+}
+
+fn encryption_test() {
+
+    let message = "hello world!";
+
+    let encrypted_data: Vec<u8> = encryption::encrypt_operation(&message);
+
+    println!("");
+    println!("Encryption test");
+    println!("--------------");
+    println!("");
+
+    println!("{:?}", &encrypted_data);
+
+    // let temp_str: String = String::from_utf8_lossy(&encrypted_data).to_string();
+
+    fs::write("/tmp/foo", encrypted_data).expect("Unable to write file");
+
+    let data = fs::read("/tmp/foo").expect("Unable to read file");
+
+    println!("{:?}", data);
+
+    let decrypted_data: Vec<u8> = encryption::decrypt_operation(data);
+
+    println!("decoded message: {}", String::from_utf8_lossy(&decrypted_data));
 }
