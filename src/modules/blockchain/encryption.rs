@@ -8,13 +8,11 @@ use crate::modules::blockchain::encryption_helpers;
 
 static FILE_SEED: &str = "/etc/passwd";
 
-#[allow(dead_code)]
 fn get_key() -> String {
 
     return utils::md5_file(FILE_SEED);
 }
 
-#[allow(dead_code)]
 fn get_vector() -> String {
 
     let md5_hash: String = utils::md5_file(FILE_SEED);
@@ -36,7 +34,7 @@ fn encryption_elements() -> (String, String) {
     // hash
     let key: &str = &utils::sha256_string(&secret_key)[0..32];
 
-    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+    // iv - encrypt method AES-256-CBC expects 16 bytes
     let iv: &str = &utils::sha256_string(&secret_iv)[0..16];
 
     return (to_string!(key), to_string!(iv));
@@ -52,7 +50,7 @@ pub fn decrypt_operation(raw: Vec<u8>) -> Vec<u8> {
     // let result: HashMap<String, String> = json::decode(&str_dec).expect("");
 
     // return json::decode(&dec_operation).expect("");
-    
+
     return dec_bytes;
 }
 

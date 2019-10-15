@@ -2,6 +2,7 @@ extern crate iron;
 extern crate router;
 extern crate dotenv;
 extern crate rustc_serialize;
+extern crate crypto;
 
 use blockchain_rust::modules::login::login;
 use blockchain_rust::modules::users::users;
@@ -16,6 +17,7 @@ use std::fs;
 
 #[macro_use]
 mod macros;
+
 pub mod utils;
 
 static USER_SERVICE: &str = "/api/users";
