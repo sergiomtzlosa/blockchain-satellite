@@ -1,5 +1,5 @@
-use crypto::{ symmetriccipher, buffer, aes, blockmodes };
-use crypto::buffer::{ ReadBuffer, WriteBuffer, BufferResult };
+use crypto::{symmetriccipher, buffer, aes, blockmodes};
+use crypto::buffer::{ReadBuffer, WriteBuffer, BufferResult};
 
 // https://github.com/DaGenix/rust-crypto/blob/master/examples/symmetriccipher.rs
 
