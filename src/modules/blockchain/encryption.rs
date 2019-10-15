@@ -41,7 +41,9 @@ fn encryption_elements() -> (String, String) {
     return (to_string!(key), to_string!(iv));
 }
 
-pub fn decrypt_operation(raw: Vec<u8>) -> Vec<u8> {
+pub fn decrypt_operation(str_encrypted: &str) -> Vec<u8> {
+
+    let raw: Vec<u8> = base64_decode(&str_encrypted);
 
     let (key, iv) = encryption_elements();
 
@@ -55,11 +57,13 @@ pub fn decrypt_operation(raw: Vec<u8>) -> Vec<u8> {
     return dec_bytes;
 }
 
-pub fn encrypt_operation(message: &str) -> Vec<u8> {
+pub fn encrypt_operation(message: &str) -> String {
 
     let (key, iv) = encryption_elements();
 
-    return encryption_helpers::encrypt(message.as_bytes(), key.as_bytes(), iv.as_bytes()).ok().unwrap();
+    let bytes: Vec<u8> = encryption_helpers::encrypt(message.as_bytes(), key.as_bytes(), iv.as_bytes()).ok().unwrap();
+
+    return base64_encode(&bytes);
 }
 
 pub fn base64_encode(bytes_array: &Vec<u8>)-> String {

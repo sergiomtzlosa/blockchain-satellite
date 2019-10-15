@@ -78,7 +78,7 @@ fn encryption_test() {
 
     let message = "hello world!";
 
-    let encrypted_data: Vec<u8> = encryption::encrypt_operation(&message);
+    let encrypted_data: String = encryption::encrypt_operation(&message);
 
     println!("");
     println!("Encryption test");
@@ -87,15 +87,7 @@ fn encryption_test() {
 
     println!("{:?}", &encrypted_data);
 
-    let hex_encoded: String = encryption::base64_encode(&encrypted_data);
-
-    println!("{:?}", hex_encoded);
-
-    let data: Vec<u8> = encryption::base64_decode(&hex_encoded);
-
-    println!("{:?}", data);
-
-    let decrypted_data: Vec<u8> = encryption::decrypt_operation(data);
+    let decrypted_data: Vec<u8> = encryption::decrypt_operation(&encrypted_data);
 
     println!("decoded message: {}", String::from_utf8_lossy(&decrypted_data));
 }
