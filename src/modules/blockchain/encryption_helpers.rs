@@ -21,7 +21,7 @@ pub fn decrypt(encrypted_data: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, 
 
             Ok(BufferResult::BufferUnderflow) => break,
             Ok(BufferResult::BufferOverflow) => { },
-            Err(_) => {}
+            Err(_) => { }
         }
     }
 
@@ -78,7 +78,7 @@ pub fn encrypt(data: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, symmetricc
 
             Ok(BufferResult::BufferUnderflow) => break,
             Ok(BufferResult::BufferOverflow) => { }
-            Err(_) => {}
+            Err(_) => { }
         }
     }
 
