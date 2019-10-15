@@ -69,6 +69,7 @@ pub fn encrypt(data: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, symmetricc
     // us that it stopped processing data due to not having any more data in the
     // input buffer.
     loop {
+        
         let result = encryptor.encrypt(&mut read_buffer, &mut write_buffer, true);
 
         // "write_buffer.take_read_buffer().take_remaining()" means:
