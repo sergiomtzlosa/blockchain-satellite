@@ -97,6 +97,8 @@ MODIFIES SQL DATA
 DELIMITER ;
 
 -- Update user data
+DROP PROCEDURE IF EXISTS `sensors`.`update_user_data`;
+
 DELIMITER //
 CREATE PROCEDURE `sensors`.`update_user_data`(IN username VARCHAR(150), IN password VARCHAR(150), IN name VARCHAR(150), IN surname VARCHAR(150), IN description VARCHAR(150), IN user_id INT(11))
 MODIFIES SQL DATA
