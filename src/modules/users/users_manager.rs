@@ -385,7 +385,7 @@ pub fn update_user(username: &String, password: &String, name: &String, surname:
 
     let hash_password = utils::new_hash(password);
 
-    let query = format!("CALL update_user_data('{}', '{}', '{}', '{}', '{}', {})", username, hash_password, name, surname, description, user_id.parse::<i32>().unwrap());
+    let query = format!("CALL update_user_data('{}', '{}', '{}', '{}', '{}', {})", username, hash_password, name, surname, description, to_int!(user_id));
 
     let conn_string: String = format!("mysql://{}:{}@{}:{}/{}", &**MYSQL_USER, &**MYSQL_PASSWORD, &**MYSQL_HOST, &**MYSQL_PORT, &**MYSQL_DATABASE);
     let pool = my::Pool::new(conn_string).unwrap();
@@ -439,7 +439,7 @@ pub fn delete_user(user_id: &String, token: &String) -> (HashMap<String, String>
 
     let delete_user = vec![
         UserDelete {
-            user_id: user_id.parse::<i32>().unwrap()
+            user_id: to_int!(user_id)
         }
     ];
 
