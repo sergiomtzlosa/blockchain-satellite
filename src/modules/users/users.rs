@@ -14,6 +14,11 @@ pub fn manage_users(request: &mut Request) -> Response {
 
     let str_response = utils::get_json_body(request);
 
+    if str_response.len() == 0 {
+
+        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+    }
+    
     let token: String = utils::get_header_with_name(to_string!("Token"), &request.headers);
 
     if token.len() == 0 {

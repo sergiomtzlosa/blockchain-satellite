@@ -1,5 +1,5 @@
-pub mod connector_mongodb;
 pub mod blockchain;
-pub mod blockchain_manager;
+pub mod values;
+pub mod values_manager;
 pub mod encryption;
 pub mod encryption_helpers;

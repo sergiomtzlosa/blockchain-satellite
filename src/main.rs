@@ -6,7 +6,7 @@ extern crate crypto;
 
 use blockchain_rust::modules::login::login;
 use blockchain_rust::modules::users::users;
-use blockchain_rust::modules::blockchain::blockchain;
+use blockchain_rust::modules::blockchain::values;
 // use blockchain_rust::modules::blockchain::encryption;
 use blockchain_rust::connection_data::*;
 use dotenv::dotenv;
@@ -40,7 +40,7 @@ fn users(req: &mut Request) -> IronResult<Response> {
 
 fn values(req: &mut Request) -> IronResult<Response> {
 
-    let response = blockchain::manage_blockchain(req);
+    let response = values::manage_blockchain(req);
 
     Ok(response)
 }
