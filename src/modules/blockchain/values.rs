@@ -6,10 +6,13 @@ use iron::status;
 use rustc_serialize::json;
 use crate::modules::users::users_manager;
 use crate::modules::blockchain::values_manager;
+use crate::modules::blockchain::container_objects::ContainerObjects;
+use rustc_serialize;
 
 pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
+pub use crate::typeinfo;
 
 pub fn manage_values(request: &mut Request) -> Response {
 
@@ -86,18 +89,25 @@ pub fn manage_values(request: &mut Request) -> Response {
 
             Ok(incoming)  => {
 
-                let map: HashMap<String, String> = incoming;
+                let object: HashMap<String, String> = incoming;
 
                 if http_method.to_lowercase() == "post" {
 
-                    let (result_map, code) = perform_blockchain_post(&token, &map);
+                    // test
+                    let final_data: ContainerObjects = ContainerObjects{
+
+                        array: Vec::new(),
+                        map: HashMap::new()
+                    };
+
+                    let (result_map, code) = perform_blockchain_post(&token, &final_data);
                     status_code = code;
 
                     json::encode(&result_map).expect("Error encoding response")
 
                 } else if http_method.to_lowercase() == "put" {
 
-                    let (result_map, code) = perform_blockchain_put(&token, &map);
+                    let (result_map, code) = perform_blockchain_put(&token, &object);
                     status_code = code;
 
                     json::encode(&result_map).expect("Error encoding response")
@@ -121,7 +131,7 @@ pub fn manage_values(request: &mut Request) -> Response {
     utils::create_response(status_code, out)
 }
 
-fn perform_blockchain_post(token: &String, data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
+fn perform_blockchain_post(token: &String, data: &ContainerObjects) -> (HashMap<String, String>, status::Status) {
 
     return values_manager::insert_new_document(&data, &token);
 }

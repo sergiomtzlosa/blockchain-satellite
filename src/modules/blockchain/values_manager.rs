@@ -4,8 +4,9 @@ extern crate iron;
 use std::collections::HashMap;
 use iron::status;
 //use crate::modules::blockchain::blockchain;
-// use blockchain_rust::typeinfo::TypeInfo;
+//use blockchain_rust::typeinfo::TypeInfo;
 use crate::connection_data::*;
+use crate::modules::blockchain::container_objects::ContainerObjects;
 //use mongodb::{Bson, bson, doc};
 use mongodb::{Client, ThreadedClient};
 use mongodb::db::ThreadedDatabase;
@@ -13,7 +14,7 @@ use mongodb::db::ThreadedDatabase;
 pub use crate::macros;
 
 #[allow(unused_variables)]
-pub fn insert_new_document(data: &HashMap<String, String>, token: &String)  -> (HashMap<String, String>, status::Status) {
+pub fn insert_new_document(structure: &ContainerObjects, token: &String)  -> (HashMap<String, String>, status::Status) {
 
     return (HashMap::new(), status::Ok);
 }
