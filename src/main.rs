@@ -17,6 +17,9 @@ use std::str;
 #[macro_use]
 mod macros;
 
+#[macro_use]
+mod typeinfo;
+
 static USER_SERVICE: &str = "/api/users";
 static LOGIN_SERVICE: &str = "/api/login";
 static VALUES_SERVICE: &str = "/api/values";

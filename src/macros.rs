@@ -1,3 +1,4 @@
+
 #[macro_export]
 macro_rules! to_string {
    ($input:expr) => {
@@ -23,6 +24,6 @@ macro_rules! to_u16 {
 macro_rules! try_operation {
     ($e:expr) => (match $e {
         Ok(val) => val,
-        Err(err) => return Err(err),
+        Err(err) => return Err(err)
     });
 }
