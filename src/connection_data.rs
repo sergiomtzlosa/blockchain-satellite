@@ -27,7 +27,7 @@ lazy_static! {
     pub static ref MONGODB_HOST: String = utils::unwrap_key("MONGODB_HOST");
 
     #[derive(Copy, Clone, Debug)]
-    pub static ref MONGODB_PORT: String = utils::unwrap_key("WEBSERVER_PORT");
+    pub static ref MONGODB_PORT: String = utils::unwrap_key("MONGODB_PORT");
 
     #[derive(Copy, Clone, Debug)]
     pub static ref MONGODB_USER: String = utils::unwrap_key("MONGODB_USER");

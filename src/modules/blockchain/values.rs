@@ -15,7 +15,9 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
 
     let str_response = utils::get_json_body(request);
 
-    if str_response.len() == 0 {
+    let http_method: &str = request.method.as_ref();
+
+    if str_response.len() == 0 && http_method.to_lowercase() != "delete"  {
 
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
     }
@@ -27,7 +29,7 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
     }
 
-    if users_manager::enabled_user(&token) {
+    if !users_manager::enabled_user(&token) {
 
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::USER_DISABLED));
     }
@@ -37,76 +39,83 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::TOKEN_EXPIRED));
     }
 
-    let http_method: &str = request.method.as_ref();
-
     let status_code;
     let out;
+    if http_method.to_lowercase() == "delete" {
 
-    out = match json::decode(&str_response) {
+        let url_str = request.url.as_ref().as_str();
+        let blockchain_name = utils::get_param_url_with_name("blockchain_name", url_str);
 
-        Ok(incoming)  => {
+        if blockchain_name.len() == 0 {
 
-            let map: HashMap<String, String> = incoming;
+            utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+        }
 
-            if http_method.to_lowercase() == "post" {
+        let (result_map, code) = perform_blockchain_delete(&blockchain_name);
+        status_code = code;
 
-                let (result_map, code) = perform_blockchain_post(&token, &map);
-                status_code = code;
+        out = json::encode(&result_map).expect("Error encoding response");
 
-                json::encode(&result_map).expect("Error encoding response")
+    } else {
 
-            } else if http_method.to_lowercase() == "put" {
+        out = match json::decode(&str_response) {
 
-                let (result_map, code) = perform_blockchain_put(&token, &map);
-                status_code = code;
+            Ok(incoming)  => {
 
-                json::encode(&result_map).expect("Error encoding response")
+                let map: HashMap<String, String> = incoming;
 
-            } else if http_method.to_lowercase() == "delete" {
+                if http_method.to_lowercase() == "post" {
 
-                let url_str = request.url.as_ref().as_str();
-                let blockchain_name = utils::get_param_url_with_name("blockchain_name", url_str);
+                    let (result_map, code) = perform_blockchain_post(&token, &map);
+                    status_code = code;
 
-                let (result_map, code) = perform_blockchain_delete(&blockchain_name);
-                status_code = code;
+                    json::encode(&result_map).expect("Error encoding response")
 
-                json::encode(&result_map).expect("Error encoding response")
+                } else if http_method.to_lowercase() == "put" {
 
-            } else if http_method.to_lowercase() == "get" {
+                    let (result_map, code) = perform_blockchain_put(&token, &map);
+                    status_code = code;
 
-                let url_str = request.url.as_ref().as_str();
-                let block_id = utils::get_param_url_with_name("block_id", url_str);
-                let encryption = utils::get_param_url_with_name("encryption", url_str);
+                    json::encode(&result_map).expect("Error encoding response")
 
-                if block_id.len() == 0 || encryption.len() == 0 {
+                } else if http_method.to_lowercase() == "get" {
 
-                    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+                    let url_str = request.url.as_ref().as_str();
+                    let block_id = utils::get_param_url_with_name("block_id", url_str);
+                    let encryption = utils::get_param_url_with_name("encryption", url_str);
+
+                    if block_id.len() == 0 || encryption.len() == 0 {
+
+                        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+                    }
+
+                    if !utils::is_numeric(&encryption) {
+
+                        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+                    }
+
+                    let value_encryption: bool = if to_int!(&encryption) == 0 { false } else { true };
+
+                    let (result_map, code) = perform_blockchain_get(&block_id, value_encryption);
+                    status_code = code;
+
+                    json::encode(&result_map).expect("Error encoding response")
+
+                } else {
+
+                    status_code = status::InternalServerError;
+                    utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
                 }
 
-                if !utils::is_numeric(&encryption) {
-
-                    utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
-                }
-
-                let value_encryption: bool = if to_int!(&encryption) == 0 { false } else { true };
-
-                let (result_map, code) = perform_blockchain_get(&block_id, value_encryption);
-                status_code = code;
-
-                json::encode(&result_map).expect("Error encoding response")
-
-            } else {
+            }, Err(_) => {
 
                 status_code = status::InternalServerError;
                 utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
             }
+        };
+    }
 
-        }, Err(_) => {
-
-            status_code = status::InternalServerError;
-            utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
-        }
-    };
+    println!("{}", out);
 
     utils::create_response(status_code, out)
 }
@@ -139,7 +148,26 @@ fn perform_blockchain_put(token: &String, data: &HashMap<String, String>) -> (Ha
 
 fn perform_blockchain_delete(collection: &String) -> (HashMap<String, String>, status::Status) {
 
-    return values_manager::drop_blockchain(collection);
+    let deleted: bool =  values_manager::drop_blockchain(collection);
+
+    let mut result: HashMap<String, String> = HashMap::new();
+
+    let status;
+
+    if deleted == true {
+
+        result.insert(to_string!("message"), messages::BLOCKCHAIN_DELETED.to_string());
+
+        status = status::Ok;
+
+    } else {
+
+        result.insert(to_string!("message"), messages::DATA_NOT_FOUND.to_string());
+
+        status = status::InternalServerError;
+    }
+    
+    return (result, status);
 }
 
 fn perform_blockchain_get(block_id: &String, encryption: bool) -> (HashMap<String, String>, status::Status) {

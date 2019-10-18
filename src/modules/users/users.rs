@@ -18,7 +18,7 @@ pub fn manage_users(request: &mut Request) -> Response {
 
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
     }
-    
+
     let token: String = utils::get_header_with_name(to_string!("Token"), &request.headers);
 
     if token.len() == 0 {
@@ -26,7 +26,7 @@ pub fn manage_users(request: &mut Request) -> Response {
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
     }
 
-    if users_manager::enabled_user(&token) {
+    if !users_manager::enabled_user(&token) {
 
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::USER_DISABLED));
     }
