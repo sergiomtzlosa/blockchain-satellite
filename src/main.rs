@@ -41,7 +41,7 @@ fn users(req: &mut Request) -> IronResult<Response> {
 
 fn values(req: &mut Request) -> IronResult<Response> {
 
-    let response = values::manage_blockchain(req);
+    let response = values::manage_values(req);
 
     Ok(response)
 }

@@ -11,13 +11,13 @@ pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
 
-pub fn manage_blockchain(request: &mut Request) -> Response {
+pub fn manage_values(request: &mut Request) -> Response {
 
     let str_response = utils::get_json_body(request);
 
     let http_method: &str = request.method.as_ref();
 
-    if str_response.len() == 0 && http_method.to_lowercase() != "delete"  {
+    if str_response.len() == 0 && (http_method.to_lowercase() != "delete" || http_method.to_lowercase() != "get") {
 
         utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
     }
@@ -41,6 +41,7 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
 
     let status_code;
     let out;
+
     if http_method.to_lowercase() == "delete" {
 
         let url_str = request.url.as_ref().as_str();
@@ -52,6 +53,29 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
         }
 
         let (result_map, code) = perform_blockchain_delete(&blockchain_name);
+        status_code = code;
+
+        out = json::encode(&result_map).expect("Error encoding response");
+
+    } else if http_method.to_lowercase() == "get" {
+
+        let url_str = request.url.as_ref().as_str();
+        let block_id = utils::get_param_url_with_name("block_id", url_str);
+        let encryption = utils::get_param_url_with_name("encryption", url_str);
+
+        if block_id.len() == 0 || encryption.len() == 0 {
+
+            utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+        }
+
+        if !utils::is_numeric(&encryption) {
+
+            utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
+        }
+
+        let value_encryption: bool = if to_int!(&encryption) == 0 { false } else { true };
+
+        let (result_map, code) = perform_blockchain_get(&block_id, value_encryption);
         status_code = code;
 
         out = json::encode(&result_map).expect("Error encoding response");
@@ -74,29 +98,6 @@ pub fn manage_blockchain(request: &mut Request) -> Response {
                 } else if http_method.to_lowercase() == "put" {
 
                     let (result_map, code) = perform_blockchain_put(&token, &map);
-                    status_code = code;
-
-                    json::encode(&result_map).expect("Error encoding response")
-
-                } else if http_method.to_lowercase() == "get" {
-
-                    let url_str = request.url.as_ref().as_str();
-                    let block_id = utils::get_param_url_with_name("block_id", url_str);
-                    let encryption = utils::get_param_url_with_name("encryption", url_str);
-
-                    if block_id.len() == 0 || encryption.len() == 0 {
-
-                        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
-                    }
-
-                    if !utils::is_numeric(&encryption) {
-
-                        utils::create_response(status::InternalServerError, utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR));
-                    }
-
-                    let value_encryption: bool = if to_int!(&encryption) == 0 { false } else { true };
-
-                    let (result_map, code) = perform_blockchain_get(&block_id, value_encryption);
                     status_code = code;
 
                     json::encode(&result_map).expect("Error encoding response")
@@ -166,7 +167,7 @@ fn perform_blockchain_delete(collection: &String) -> (HashMap<String, String>, s
 
         status = status::InternalServerError;
     }
-    
+
     return (result, status);
 }
 
