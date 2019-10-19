@@ -42,12 +42,12 @@ fn encryption_elements() -> (String, String) {
 
 fn base64_encode(bytes_array: &Vec<u8>)-> String {
 
-    return hex::encode(&bytes_array);
+    return base64::encode(&bytes_array);
 }
 
 fn base64_decode(string_encoded: &str)-> Vec<u8> {
 
-    return hex::decode(string_encoded).ok().unwrap();
+    return base64::decode(string_encoded).ok().unwrap();
 }
 
 pub fn decrypt_operation(str_encrypted: &str) -> Vec<u8> {

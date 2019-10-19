@@ -85,6 +85,19 @@ pub fn get_param_url_with_name(name_param: &str, url: &str) -> String {
     return to_string!(value);
 }
 
+pub fn simple_sha256_encode(str_item: &str) -> String {
+
+    let str_final: String = to_string!(str_item);
+
+    let hmac_key: Vec<u8> = Vec::new();
+    let mut hmac = Hmac::new(Sha256::new(), &hmac_key);
+    hmac.input(str_final.as_bytes());
+
+    let result = hmac.result().code().to_hex();
+
+    return result;
+}
+
 pub fn new_hash(message: &str) -> String {
 
     let salted: String = to_string!(message) + &unwrap_key("SALT_WORD").as_ref();

@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate lazy_static;
 
+extern crate chrono;
+
 #[macro_use]
 pub mod macros;
 

@@ -12,7 +12,6 @@ use rustc_serialize;
 pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
-pub use crate::typeinfo;
 
 pub fn manage_values(request: &mut Request) -> Response {
 
@@ -91,7 +90,7 @@ pub fn manage_values(request: &mut Request) -> Response {
 
             let map_object: HashMap<String, String> = object.unwrap();
 
-            let (result_map, code) = perform_blockchain_post(&token, &map_object);
+            let (result_map, code) = perform_blockchain_post(&map_object);
             status_code = code;
 
             out = json::encode(&result_map).expect("Error encoding response");
@@ -113,10 +112,6 @@ pub fn manage_values(request: &mut Request) -> Response {
 
                 let (result_map, code) = perform_blockchain_post_bulk(&token, &deserialized_vec);
                 status_code = code;
-
-                // let temp: HashMap<String, String> = deserialized_vec.into_iter().nth(0).unwrap();
-                // let value_temp: String = temp.get("key1").unwrap().to_string();
-                // println!("{}", value_temp);
 
                 out = json::encode(&result_map).expect("Error encoding response");
 
@@ -158,26 +153,9 @@ pub fn manage_values(request: &mut Request) -> Response {
     utils::create_response(status_code, out)
 }
 
-// fn decode_custom_json_array(json_str: &String) -> MapObject {
-//
-//     let deserialized = serde_json::from_str::<MapObject>(&json_str);
-//
-//     if deserialized.is_ok() {
-//
-//         // for i in &deserialized.vec_object {
-//         //     println!("{:#?}", i);
-//         // }
-//
-//         return deserialized.unwrap();
-//     } else {
-//
-//         return Null;
-//     }
-// }
+fn perform_blockchain_post(data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
 
-fn perform_blockchain_post(token: &String, data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
-
-    return values_manager::insert_new_document(&data, &token);
+    return values_manager::insert_new_document(&data);
 }
 
 fn perform_blockchain_post_bulk(token: &String, data: &Vec<HashMap<String, String>>) -> (HashMap<String, String>, status::Status) {
