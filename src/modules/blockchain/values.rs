@@ -1,4 +1,5 @@
 extern crate iron;
+extern crate serde_json;
 
 use std::collections::HashMap;
 use iron::prelude::*;
@@ -6,7 +7,6 @@ use iron::status;
 use rustc_serialize::json;
 use crate::modules::users::users_manager;
 use crate::modules::blockchain::values_manager;
-use crate::modules::blockchain::container_objects::ContainerObjects;
 use rustc_serialize;
 
 pub use crate::messages;
@@ -83,6 +83,47 @@ pub fn manage_values(request: &mut Request) -> Response {
 
         out = json::encode(&result_map).expect("Error encoding response");
 
+    } else if http_method.to_lowercase() == "post" {
+
+        let object = json::decode(&str_response);
+
+        if object.is_ok() {
+
+            let map_object: HashMap<String, String> = object.unwrap();
+
+            let (result_map, code) = perform_blockchain_post(&token, &map_object);
+            status_code = code;
+
+            out = json::encode(&result_map).expect("Error encoding response");
+
+            println!("encoding here done!");
+
+        } else {
+
+            let raw_object = serde_json::from_str(&str_response);
+
+            if raw_object.is_err() {
+
+                status_code = status::InternalServerError;
+                out = utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR);
+
+            } else {
+
+                let deserialized_vec: Vec<HashMap<String, String>> = raw_object.unwrap();
+
+                let (result_map, code) = perform_blockchain_post_bulk(&token, &deserialized_vec);
+                status_code = code;
+
+                // let temp: HashMap<String, String> = deserialized_vec.into_iter().nth(0).unwrap();
+                // let value_temp: String = temp.get("key1").unwrap().to_string();
+                // println!("{}", value_temp);
+
+                out = json::encode(&result_map).expect("Error encoding response");
+
+                println!("custom encoding here done!");
+            }
+        }
+
     } else {
 
         out = match json::decode(&str_response) {
@@ -91,21 +132,7 @@ pub fn manage_values(request: &mut Request) -> Response {
 
                 let object: HashMap<String, String> = incoming;
 
-                if http_method.to_lowercase() == "post" {
-
-                    // test
-                    let final_data: ContainerObjects = ContainerObjects{
-
-                        array: Vec::new(),
-                        map: HashMap::new()
-                    };
-
-                    let (result_map, code) = perform_blockchain_post(&token, &final_data);
-                    status_code = code;
-
-                    json::encode(&result_map).expect("Error encoding response")
-
-                } else if http_method.to_lowercase() == "put" {
+                if http_method.to_lowercase() == "put" {
 
                     let (result_map, code) = perform_blockchain_put(&token, &object);
                     status_code = code;
@@ -131,9 +158,31 @@ pub fn manage_values(request: &mut Request) -> Response {
     utils::create_response(status_code, out)
 }
 
-fn perform_blockchain_post(token: &String, data: &ContainerObjects) -> (HashMap<String, String>, status::Status) {
+// fn decode_custom_json_array(json_str: &String) -> MapObject {
+//
+//     let deserialized = serde_json::from_str::<MapObject>(&json_str);
+//
+//     if deserialized.is_ok() {
+//
+//         // for i in &deserialized.vec_object {
+//         //     println!("{:#?}", i);
+//         // }
+//
+//         return deserialized.unwrap();
+//     } else {
+//
+//         return Null;
+//     }
+// }
+
+fn perform_blockchain_post(token: &String, data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
 
     return values_manager::insert_new_document(&data, &token);
+}
+
+fn perform_blockchain_post_bulk(token: &String, data: &Vec<HashMap<String, String>>) -> (HashMap<String, String>, status::Status) {
+
+    return values_manager::insert_new_document_bulk(&data, token);
 }
 
 fn perform_blockchain_put(token: &String, data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
