@@ -3,6 +3,8 @@ extern crate lazy_static;
 
 extern crate chrono;
 
+extern crate merkle;
+
 #[macro_use]
 pub mod macros;
 

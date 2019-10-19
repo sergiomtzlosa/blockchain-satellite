@@ -40,12 +40,12 @@ fn encryption_elements() -> (String, String) {
     return (to_string!(key), to_string!(iv));
 }
 
-fn base64_encode(bytes_array: &Vec<u8>)-> String {
+pub fn base64_encode(bytes_array: &Vec<u8>)-> String {
 
     return base64::encode(&bytes_array);
 }
 
-fn base64_decode(string_encoded: &str)-> Vec<u8> {
+pub fn base64_decode(string_encoded: &str)-> Vec<u8> {
 
     return base64::decode(string_encoded).ok().unwrap();
 }

@@ -85,7 +85,7 @@ pub fn get_param_url_with_name(name_param: &str, url: &str) -> String {
     return to_string!(value);
 }
 
-pub fn simple_sha256_encode(str_item: &str) -> String {
+pub fn sha256_encode(str_item: &str) -> String {
 
     let str_final: String = to_string!(str_item);
 

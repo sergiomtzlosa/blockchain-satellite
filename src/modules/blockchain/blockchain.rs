@@ -8,11 +8,16 @@ use mongodb::{Bson, bson, doc};
 use chrono::prelude::*;
 use rustc_serialize::json;
 use rand::Rng;
+use ring::digest::{Algorithm, SHA256};
+use crate::merkle::MerkleTree;
 use crate::modules::blockchain::encryption;
 use crate::modules::blockchain::blockchain_types::Value;
 use crate::modules::blockchain::blockchain_types;
 
 pub use crate::utils;
+
+#[allow(non_upper_case_globals)]
+static digest: &'static Algorithm = &SHA256;
 
 pub fn get_pre_hash(collection: &Collection) -> String {
 
@@ -106,7 +111,7 @@ fn new_hash(block: &HashMap<String, Value>) -> String {
 
     let json_data: String = json::encode(&new_block).expect("Error encoding response");
 
-    let hash: String = utils::simple_sha256_encode(&json_data);
+    let hash: String = utils::sha256_encode(&json_data);
 
     return hash;
 }
@@ -124,7 +129,19 @@ fn new_nonce() -> String {
 
 fn get_merkle_hash() -> String {
 
-    return to_string!("");
+    let values = vec!["one", "two", "three", "four"];
+
+    let tree = MerkleTree::from_vec(digest, values);
+
+    let root_hash = tree.root_hash();
+    let final_root_hash = encryption::base64_encode(&root_hash);
+
+    return final_root_hash;
+}
+
+fn get_all_ids() -> Vec<String> {
+
+    return Vec::new();
 }
 
 fn get_chain_high() -> String {
