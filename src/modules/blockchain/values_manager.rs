@@ -152,11 +152,15 @@ pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (S
         let datetime: &Bson = doc.get("datetime").unwrap();
         let high: &Bson = doc.get("high").unwrap();
         let nonce: &Bson = doc.get("nonce").unwrap();
+        let hash: &Bson = doc.get("hash").unwrap();
+        let merkle_root: &Bson = doc.get("merkle_root").unwrap();
 
         let data_str: String = data.as_str().unwrap().to_string();
         let datetime_str: String = datetime.as_str().unwrap().to_string();
         let high_str: String = high.as_str().unwrap().to_string();
         let nonce_str: String = nonce.as_str().unwrap().to_string();
+        let hash_str: String = hash.as_str().unwrap().to_string();
+        let merkle_root_str: String = merkle_root.as_str().unwrap().to_string();
 
         let data_decrypt: HashMap<String, String> = encryption::decrypt_operation_object(&data_str);
 
@@ -165,7 +169,9 @@ pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (S
             data: data_decrypt,
             datetime: datetime_str,
             high: high_str,
-            nonce: nonce_str
+            nonce: nonce_str,
+            hash: hash_str,
+            merkle_root: merkle_root_str,
         };
 
         vec_complex.push(single_doc);

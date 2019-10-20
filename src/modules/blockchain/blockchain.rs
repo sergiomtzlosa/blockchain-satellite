@@ -12,7 +12,7 @@ use ring::digest::{Algorithm, SHA256};
 use crate::merkle::MerkleTree;
 use crate::modules::blockchain::encryption;
 use crate::modules::blockchain::blockchain_types::Value;
-use crate::modules::blockchain::blockchain_types::BlockChainBlock;
+use crate::modules::blockchain::blockchain_types::BlockchainBlock;
 use crate::modules::blockchain::blockchain_types;
 
 pub use crate::utils;
@@ -223,8 +223,8 @@ pub fn find_docs(rows: &String, date_from: &String, date_to: &String, collection
 
           options.limit = Some(num_rows);
 
-          let start_date_naive = NaiveDateTime::parse_from_str(date_from, "%Y-%m-%d %H:%M:%S+00:00").unwrap();
-          let end_date_naive = NaiveDateTime::parse_from_str(date_to, "%Y-%m-%d %H:%M:%S+00:00").unwrap();
+          let start_date_naive = NaiveDateTime::parse_from_str(date_from, "%Y-%m-%d %H:%M:%S").unwrap();
+          let end_date_naive = NaiveDateTime::parse_from_str(date_to, "%Y-%m-%d %H:%M:%S").unwrap();
 
           let start_item = DateTime::<Utc>::from_utc(start_date_naive, Utc);
           let end_item = DateTime::<Utc>::from_utc(end_date_naive, Utc);
@@ -285,7 +285,7 @@ fn new_hash(block: &HashMap<String, Value>) -> String {
     let pre_hash_value: String = blockchain_types::get_string(pre_hash).replace("\"", "");
     let nonce_value: String = blockchain_types::get_string(nonce).replace("\"", "");
 
-    let object = BlockChainBlock {
+    let object = BlockchainBlock {
 
        data: data_value,
        datetime: datetime_value,

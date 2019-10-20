@@ -2,7 +2,7 @@ use mongodb::Bson;
 use std::collections::HashMap;
 
 #[derive(RustcDecodable, RustcEncodable)]
-pub struct BlockChainBlock  {
+pub struct BlockchainBlock  {
 
     pub data: String,
     pub datetime: String,
@@ -18,6 +18,8 @@ pub struct ComplexDocumentFind  {
     pub datetime: String,
     pub high: String,
     pub nonce: String,
+    pub hash: String,
+    pub merkle_root: String,
 }
 
 #[derive(RustcDecodable, RustcEncodable)]
