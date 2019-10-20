@@ -1,6 +1,10 @@
 Blockchain written in Rust for low-orbit satellites
 ----------------------------------------------------
 
+This is a project to set-up a blockchain over a Low-Orbit satellite as part of a proof of concept for the paper:
+
+[Blockchain and radio communications over suborbital spaceflights: Watchtowers and Mystics](https://arxiv.org/abs/1910.04835)
+
 ## Technology used
 
 - PHP 7.1.16
