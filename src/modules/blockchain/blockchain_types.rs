@@ -17,7 +17,6 @@ pub struct ComplexDocumentFind  {
     pub data: HashMap<String, String>,
     pub datetime: String,
     pub high: String,
-    pub pre_hash: String,
     pub nonce: String,
 }
 
