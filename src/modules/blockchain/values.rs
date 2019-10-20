@@ -13,6 +13,13 @@ pub use crate::messages;
 pub use crate::utils;
 pub use crate::http_codes;
 
+#[derive(RustcDecodable, RustcEncodable)]
+pub struct InsertionResult  {
+
+    pub docs_inserted: String,
+    pub blocks: Vec<HashMap<String, String>>
+}
+
 pub fn manage_values(request: &mut Request) -> Response {
 
     let str_response = utils::get_json_body(request);
@@ -93,7 +100,7 @@ pub fn manage_values(request: &mut Request) -> Response {
             let (result_map, code) = perform_blockchain_post(&map_object);
             status_code = code;
 
-            out = json::encode(&result_map).expect("Error encoding response");
+            out = result_map;
 
         } else {
 
@@ -144,14 +151,38 @@ pub fn manage_values(request: &mut Request) -> Response {
         };
     }
 
-    println!("{}", out);
+    // println!("{}", out);
 
     utils::create_response(status_code, out)
 }
 
-fn perform_blockchain_post(data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
+fn perform_blockchain_post(data: &HashMap<String, String>) -> (String, status::Status) {
 
-    return values_manager::insert_new_document(&data);
+    let vec: Vec<HashMap<String, String>> = values_manager::insert_new_document(&data);
+
+    let vec_len = vec.len();
+
+    if vec_len > 0 {
+
+         let object_result = InsertionResult {
+
+             docs_inserted: vec_len.to_string(),
+             blocks: vec
+         };
+
+         let encoded_object = json::encode(&object_result).expect("Error encoding response");
+
+         return (encoded_object, status::Ok);
+    }
+
+    let mut value_error: HashMap<String, String> = HashMap::new();
+
+    value_error.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
+    value_error.insert(to_string!("message"), messages::CANNOT_INSERT.to_string());
+
+    let str_value: String = json::encode(&value_error).expect("Error encoding response");
+
+    return (str_value, status::InternalServerError);
 }
 
 fn perform_blockchain_post_bulk(token: &String, data: &Vec<HashMap<String, String>>) -> (HashMap<String, String>, status::Status) {

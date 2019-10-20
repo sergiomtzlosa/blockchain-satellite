@@ -3,7 +3,6 @@ extern crate iron;
 
 use std::collections::HashMap;
 use iron::status;
-use rustc_serialize::json;
 use crate::modules::blockchain::blockchain_types::Value;
 use crate::modules::blockchain::blockchain_types;
 use crate::modules::blockchain::blockchain;
@@ -29,7 +28,7 @@ pub fn insert_new_document_bulk(object_json: &Vec<HashMap<String, String>>, toke
     return (HashMap::new(), status::Ok);
 }
 
-pub fn insert_new_document(object_json: &HashMap<String, String>)  -> (HashMap<String, String>, status::Status) {
+pub fn insert_new_document(object_json: &HashMap<String, String>)  -> Vec<HashMap<String, String>> {
 
     let port_mongodb: u16 = to_u16!(&**MONGODB_PORT);
 
@@ -96,22 +95,10 @@ pub fn insert_new_document(object_json: &HashMap<String, String>)  -> (HashMap<S
 
         array_id_hash.push(block_verify);
 
-        let encoded_object = json::encode(&array_id_hash).expect("Error encoding response");
-
-        let mut final_object: HashMap<String, String> = HashMap::new();
-
-        final_object.insert(to_string!("docs_inserted"), to_string!("1"));
-        final_object.insert(to_string!("blocks"), encoded_object);
-
-        return (final_object, status::Ok);
+        return array_id_hash;
     }
 
-    let mut value_error: HashMap<String, String> = HashMap::new();
-
-    value_error.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
-    value_error.insert(to_string!("message"), messages::CANNOT_INSERT.to_string());
-
-    return (value_error, status::Ok);
+    return Vec::new();
 }
 
 #[allow(unused_variables)]
