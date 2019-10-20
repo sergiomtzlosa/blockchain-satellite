@@ -7,7 +7,9 @@ This is a project to set-up a blockchain over a Low-Orbit satellite as part of a
 
 ## Technology used
 
-- PHP 7.1.16
+- Cargo 1.38.0 (23ef9a4ef 2019-08-20)
+
+- Rustc 1.38.0 (625451e37 2019-09-23)
 
 - MariaDB Server 5.5.57
 
