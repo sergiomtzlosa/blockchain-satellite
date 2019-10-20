@@ -12,6 +12,16 @@ pub struct BlockChainBlock  {
 }
 
 #[derive(RustcDecodable, RustcEncodable)]
+pub struct ComplexDocumentFind  {
+
+    pub data: HashMap<String, String>,
+    pub datetime: String,
+    pub high: String,
+    pub pre_hash: String,
+    pub nonce: String,
+}
+
+#[derive(RustcDecodable, RustcEncodable)]
 pub struct DocumentFind  {
 
     pub data: HashMap<String, String>,

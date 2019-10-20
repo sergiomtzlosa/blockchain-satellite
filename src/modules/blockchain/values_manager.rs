@@ -9,6 +9,7 @@ use mongodb::db::ThreadedDatabase;
 use mongodb::coll::Collection;
 use mongodb::{Bson, bson, doc};
 
+use crate::modules::blockchain::blockchain_types::ComplexDocumentFind;
 use crate::modules::blockchain::blockchain_types::Value;
 use crate::modules::blockchain::blockchain_types::DocumentFind;
 use crate::modules::blockchain::blockchain_types;
@@ -104,6 +105,7 @@ pub fn insert_new_document(object_json: &HashMap<String, String>) -> Vec<HashMap
         let mut verified_status = "false";
 
         if verified {
+
             verified_status = "true";
         }
 
@@ -117,10 +119,64 @@ pub fn insert_new_document(object_json: &HashMap<String, String>) -> Vec<HashMap
     return Vec::new();
 }
 
-#[allow(unused_variables)]
-pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (HashMap<String, String>, status::Status){
+pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (String, status::Status) {
 
-    return (HashMap::new(), status::Ok);
+    let port_mongodb: u16 = to_u16!(&**MONGODB_PORT);
+
+    let client = Client::connect(&**MONGODB_HOST, port_mongodb).ok().expect("Failed to connect mongodb");
+
+    let db = client.db(&**MONGODB_DATABASE);
+    db.auth(&**MONGODB_USER, &**MONGODB_PASSWORD).ok().expect("Failed to authorize user");
+
+    let collection = db.collection(&**MONGODB_COLLECTION);
+
+    let docs: Vec<_> = blockchain::find_docs(rows, date_from, date_to, &collection);
+
+    if docs.len() == 0 {
+
+        let mut error_object: HashMap<String, String> = HashMap::new();
+
+        error_object.insert(to_string!("code"), http_codes::HTTP_OK.to_string());
+        error_object.insert(to_string!("message"), messages::DATA_NOT_FOUND.to_string());
+
+        let str_error: String = json::encode(&error_object).expect("Error encoding response");
+
+        return (str_error, status::Ok);
+    }
+
+    let mut vec_complex: Vec<ComplexDocumentFind> = Vec::new();
+
+    for doc in docs {
+
+        let data: &Bson = doc.get("data").unwrap();
+        let datetime: &Bson = doc.get("datetime").unwrap();
+        let high: &Bson = doc.get("high").unwrap();
+        let pre_hash: &Bson = doc.get("pre_hash").unwrap();
+        let nonce: &Bson = doc.get("nonce").unwrap();
+
+        let data_str: String = data.as_str().unwrap().to_string();
+        let datetime_str: String = datetime.as_str().unwrap().to_string();
+        let high_str: String = high.as_str().unwrap().to_string();
+        let pre_hash_str: String = pre_hash.as_str().unwrap().to_string();
+        let nonce_str: String = nonce.as_str().unwrap().to_string();
+
+        let data_decrypt: HashMap<String, String> = encryption::decrypt_operation_object(&data_str);
+
+        let single_doc = ComplexDocumentFind {
+
+            data: data_decrypt,
+            datetime: datetime_str,
+            high: high_str,
+            pre_hash: pre_hash_str,
+            nonce: nonce_str
+        };
+
+        vec_complex.push(single_doc);
+    }
+
+    let final_response: String = json::encode(&vec_complex).expect("Error encoding response");
+
+    return (final_response, status::Ok);
 }
 
 pub fn search_block_with_id(block_id: &String, encryption: bool) -> (String, status::Status) {
@@ -183,12 +239,12 @@ pub fn search_block_with_id(block_id: &String, encryption: bool) -> (String, sta
 
     let mut error_object: HashMap<String, String> = HashMap::new();
 
-    error_object.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
+    error_object.insert(to_string!("code"), http_codes::HTTP_OK.to_string());
     error_object.insert(to_string!("message"), messages::DATA_NOT_FOUND.to_string());
 
     let str_error: String = json::encode(&error_object).expect("Error encoding response");
 
-    return (str_error, status::InternalServerError);
+    return (str_error, status::Ok);
 }
 
 pub fn drop_blockchain(collection_name: &String) -> bool {

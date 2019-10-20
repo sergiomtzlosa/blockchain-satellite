@@ -122,33 +122,29 @@ pub fn manage_values(request: &mut Request) -> Response {
             }
         }
 
+    } else if http_method.to_lowercase() == "put" {
+
+        let object = json::decode(&str_response);
+
+        if object.is_ok() {
+
+            let map_object: HashMap<String, String> = object.unwrap();
+
+            let (result_map, code) = perform_blockchain_put(&map_object);
+            status_code = code;
+
+            out = result_map;
+
+        } else {
+
+            status_code = status::InternalServerError;
+            out = utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR);
+        }
+
     } else {
 
-        out = match json::decode(&str_response) {
-
-            Ok(incoming)  => {
-
-                let object: HashMap<String, String> = incoming;
-
-                if http_method.to_lowercase() == "put" {
-
-                    let (result_map, code) = perform_blockchain_put(&object);
-                    status_code = code;
-
-                    json::encode(&result_map).expect("Error encoding response")
-
-                } else {
-
-                    status_code = status::InternalServerError;
-                    utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
-                }
-
-            }, Err(_) => {
-
-                status_code = status::InternalServerError;
-                utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
-            }
-        };
+        status_code = status::InternalServerError;
+        out = utils::create_json_output_payload(http_codes::HTTP_GENERIC_ERROR, messages::INTERNAL_ERROR)
     }
 
     // println!("{}", out);
@@ -214,28 +210,28 @@ fn perform_blockchain_post_bulk(data: &Vec<HashMap<String, String>>) -> (String,
     return (str_value, status::InternalServerError);
 }
 
-fn perform_blockchain_put(data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
+fn perform_blockchain_put(data: &HashMap<String, String>) -> (String, status::Status) {
 
     let rows: String = data.get("docs").unwrap().to_string();
 
-    let mut date_from: String =  data.get("date_from").unwrap().to_string();
+    let date_from: String =  data.get("date_from").unwrap().to_string();
+    let date_to: String =  data.get("date_to").unwrap().to_string();
 
-    if date_from.len() == 0 {
+    if date_from.len() == 0 || date_to.len() == 0 {
 
-        date_from = to_string!("");
-    }
+        let mut value_error: HashMap<String, String> = HashMap::new();
 
-    let mut date_to: String =  data.get("date_to").unwrap().to_string();
+        value_error.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
+        value_error.insert(to_string!("message"), messages::DATA_NOT_FOUND.to_string());
 
-    if date_to.len() == 0 {
+        let str_value: String = json::encode(&value_error).expect("Error encoding response");
 
-        date_to = to_string!("");
+        return (str_value, status::InternalServerError);
     }
 
     return values_manager::find_documents(&rows, &date_from, &date_to);
 }
 
-#[allow(unused_variables)]
 fn perform_blockchain_delete(collection: &String) -> (HashMap<String, String>, status::Status) {
 
     let deleted: bool =  values_manager::drop_blockchain(collection);

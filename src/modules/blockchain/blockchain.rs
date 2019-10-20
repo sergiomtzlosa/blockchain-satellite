@@ -16,6 +16,7 @@ use crate::modules::blockchain::blockchain_types::BlockChainBlock;
 use crate::modules::blockchain::blockchain_types;
 
 pub use crate::utils;
+pub use crate::macros;
 
 #[allow(non_upper_case_globals)]
 static digest: &'static Algorithm = &SHA256;
@@ -200,6 +201,53 @@ pub fn verify_block(id_block: &String, collection: &Collection)  -> bool {
     }
 
     return false;
+}
+
+pub fn find_docs(rows: &String, date_from: &String, date_to: &String, collection: &Collection) -> Vec<OrderedDocument> {
+
+    let mut num_rows: i64 = rows.parse::<i64>().unwrap();
+
+    if num_rows <= 0 {
+
+        num_rows = 10;
+    }
+
+    if num_rows > 100 {
+
+        num_rows = 100;
+    }
+
+    if date_from != "" && date_to != "" {
+
+          let mut options: FindOptions = FindOptions::new();
+
+          options.limit = Some(num_rows);
+
+          // let dt = Utc.ymd(1970, 1, 1).and_hms_nano(0, 0, 1, 444);
+          let start_date_naive = NaiveDateTime::parse_from_str(date_from, "%Y-%m-%d %H:%M:%S+00:00").unwrap();
+          let end_date_naive = NaiveDateTime::parse_from_str(date_to, "%Y-%m-%d %H:%M:%S+00:00").unwrap();
+
+          let start_item = DateTime::<Utc>::from_utc(start_date_naive, Utc);
+          let end_item = DateTime::<Utc>::from_utc(end_date_naive, Utc);
+
+          // let start = mongodb::UtcDateTime::from(start_item);
+          // let end = mongodb::UtcDateTime::from(end_date_naive);
+
+          let start_date: Bson = Bson::from(start_item);
+          let end_date: Bson = Bson::from(end_item);
+
+          let query = doc! { "timestamp" : { "$gte" : start_date, "$lte" : end_date} };
+          let cursor = collection.find(Some(query), Some(options)).ok().expect("Failed to execute find.");
+
+          let docs : Vec<_> = cursor.map(|doc| doc.unwrap()).collect();
+
+          if docs.len() > 0 {
+
+              return docs;
+          }
+    }
+
+    return Vec::new();
 }
 
 pub fn next_block_id(block_id: &String, collection: &Collection) -> String {
