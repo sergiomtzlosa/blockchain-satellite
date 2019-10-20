@@ -19,16 +19,33 @@ pub use crate::messages;
 pub use crate::http_codes;
 
 #[allow(unused_variables)]
-pub fn insert_new_document_bulk(object_json: &Vec<HashMap<String, String>>, token: &String)  -> (HashMap<String, String>, status::Status) {
+pub fn insert_new_document_bulk(object_vec: &Vec<HashMap<String, String>>)  -> Vec<HashMap<String, String>> {
 
-    // let temp: HashMap<String, String> = deserialized_vec.into_iter().nth(0).unwrap();
-    // let value_temp: String = temp.get("key1").unwrap().to_string();
-    // println!("{}", value_temp);
+    let port_mongodb: u16 = to_u16!(&**MONGODB_PORT);
 
-    return (HashMap::new(), status::Ok);
+    let client: Client = Client::connect(&**MONGODB_HOST, port_mongodb).ok().expect("Failed to connect mongodb");
+
+    let db = client.db(&**MONGODB_DATABASE);
+    db.auth(&**MONGODB_USER, &**MONGODB_PASSWORD).ok().expect("Failed to authorize user");
+
+    let collection: Collection = db.collection(&**MONGODB_COLLECTION);
+
+    let mut array_result: Vec<HashMap<String, String>> = Vec::new();
+
+    for map in object_vec {
+
+        let mut result: Vec<HashMap<String, String>> = insert_new_document(&map);
+
+        if result.len() > 0 {
+
+            array_result.append(&mut result);
+        }
+    }
+
+    return array_result;
 }
 
-pub fn insert_new_document(object_json: &HashMap<String, String>)  -> Vec<HashMap<String, String>> {
+pub fn insert_new_document(object_json: &HashMap<String, String>) -> Vec<HashMap<String, String>> {
 
     let port_mongodb: u16 = to_u16!(&**MONGODB_PORT);
 

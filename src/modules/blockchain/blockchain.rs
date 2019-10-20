@@ -206,7 +206,7 @@ fn new_hash(block: &HashMap<String, Value>) -> String {
 
     let json_data: String = json::encode(&object).unwrap();
 
-    println!("{}", json_data);
+    // println!("{}", json_data);
 
     let mut hash: String = utils::sha256_encode(&json_data);
     hash = hash.replace("\"", "").replace(" ", "");

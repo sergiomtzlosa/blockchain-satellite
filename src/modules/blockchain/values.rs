@@ -115,10 +115,10 @@ pub fn manage_values(request: &mut Request) -> Response {
 
                 let deserialized_vec: Vec<HashMap<String, String>> = raw_object.unwrap();
 
-                let (result_map, code) = perform_blockchain_post_bulk(&token, &deserialized_vec);
+                let (result_map, code) = perform_blockchain_post_bulk(&deserialized_vec);
                 status_code = code;
 
-                out = json::encode(&result_map).expect("Error encoding response");
+                out = result_map;
             }
         }
 
@@ -185,14 +185,38 @@ fn perform_blockchain_post(data: &HashMap<String, String>) -> (String, status::S
     return (str_value, status::InternalServerError);
 }
 
-fn perform_blockchain_post_bulk(token: &String, data: &Vec<HashMap<String, String>>) -> (HashMap<String, String>, status::Status) {
+fn perform_blockchain_post_bulk(data: &Vec<HashMap<String, String>>) -> (String, status::Status) {
 
-    return values_manager::insert_new_document_bulk(&data, token);
+    let vec: Vec<HashMap<String, String>> = values_manager::insert_new_document_bulk(&data);
+
+    let vec_len = vec.len();
+
+    if vec_len > 0 {
+
+         let object_result = InsertionResult {
+
+             docs_inserted: vec_len.to_string(),
+             blocks: vec
+         };
+
+         let encoded_object = json::encode(&object_result).expect("Error encoding response");
+
+         return (encoded_object, status::Ok);
+    }
+
+    let mut value_error: HashMap<String, String> = HashMap::new();
+
+    value_error.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
+    value_error.insert(to_string!("message"), messages::CANNOT_INSERT.to_string());
+
+    let str_value: String = json::encode(&value_error).expect("Error encoding response");
+
+    return (str_value, status::InternalServerError);
 }
 
 fn perform_blockchain_put(token: &String, data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
 
-    let row: String =  data.get("docs").unwrap().to_string();
+    let row: String = data.get("docs").unwrap().to_string();
 
     let mut date_from: String =  data.get("date_from").unwrap().to_string();
 
