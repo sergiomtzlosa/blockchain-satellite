@@ -87,7 +87,7 @@ pub fn manage_values(request: &mut Request) -> Response {
         let (result_map, code) = perform_blockchain_get(&block_id, value_encryption);
         status_code = code;
 
-        out = json::encode(&result_map).expect("Error encoding response");
+        out = result_map;
 
     } else if http_method.to_lowercase() == "post" {
 
@@ -132,7 +132,7 @@ pub fn manage_values(request: &mut Request) -> Response {
 
                 if http_method.to_lowercase() == "put" {
 
-                    let (result_map, code) = perform_blockchain_put(&token, &object);
+                    let (result_map, code) = perform_blockchain_put(&object);
                     status_code = code;
 
                     json::encode(&result_map).expect("Error encoding response")
@@ -214,9 +214,9 @@ fn perform_blockchain_post_bulk(data: &Vec<HashMap<String, String>>) -> (String,
     return (str_value, status::InternalServerError);
 }
 
-fn perform_blockchain_put(token: &String, data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
+fn perform_blockchain_put(data: &HashMap<String, String>) -> (HashMap<String, String>, status::Status) {
 
-    let row: String = data.get("docs").unwrap().to_string();
+    let rows: String = data.get("docs").unwrap().to_string();
 
     let mut date_from: String =  data.get("date_from").unwrap().to_string();
 
@@ -232,7 +232,7 @@ fn perform_blockchain_put(token: &String, data: &HashMap<String, String>) -> (Ha
         date_to = to_string!("");
     }
 
-    return values_manager::find_documents(&row, &date_from, &date_to, &token);
+    return values_manager::find_documents(&rows, &date_from, &date_to);
 }
 
 fn perform_blockchain_delete(collection: &String) -> (HashMap<String, String>, status::Status) {
@@ -259,7 +259,7 @@ fn perform_blockchain_delete(collection: &String) -> (HashMap<String, String>, s
     return (result, status);
 }
 
-fn perform_blockchain_get(block_id: &String, encryption: bool) -> (HashMap<String, String>, status::Status) {
+fn perform_blockchain_get(block_id: &String, encryption: bool) -> (String, status::Status) {
 
     return values_manager::search_block_with_id(block_id, encryption);
 }

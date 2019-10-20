@@ -1,4 +1,5 @@
 use mongodb::Bson;
+use std::collections::HashMap;
 
 #[derive(RustcDecodable, RustcEncodable)]
 pub struct BlockChainBlock  {
@@ -8,6 +9,14 @@ pub struct BlockChainBlock  {
     pub high: String,
     pub pre_hash: String,
     pub nonce: String,
+}
+
+#[derive(RustcDecodable, RustcEncodable)]
+pub struct DocumentFind  {
+
+    pub data: HashMap<String, String>,
+    pub block_id: String,
+    pub verified: String
 }
 
 pub enum Value {

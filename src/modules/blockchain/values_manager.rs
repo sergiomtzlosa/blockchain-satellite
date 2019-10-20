@@ -3,23 +3,24 @@ extern crate iron;
 
 use std::collections::HashMap;
 use iron::status;
-use crate::modules::blockchain::blockchain_types::Value;
-use crate::modules::blockchain::blockchain_types;
-use crate::modules::blockchain::blockchain;
-// use crate::modules::blockchain::encryption;
-use crate::connection_data::*;
-
+use rustc_serialize::json;
 use mongodb::{Client, ThreadedClient};
 use mongodb::db::ThreadedDatabase;
 use mongodb::coll::Collection;
 use mongodb::{Bson, bson, doc};
 
+use crate::modules::blockchain::blockchain_types::Value;
+use crate::modules::blockchain::blockchain_types::DocumentFind;
+use crate::modules::blockchain::blockchain_types;
+use crate::modules::blockchain::blockchain;
+use crate::modules::blockchain::encryption;
+use crate::connection_data::*;
+
 pub use crate::macros;
 pub use crate::messages;
 pub use crate::http_codes;
 
-#[allow(unused_variables)]
-pub fn insert_new_document_bulk(object_vec: &Vec<HashMap<String, String>>)  -> Vec<HashMap<String, String>> {
+pub fn insert_new_document_bulk(object_vec: &Vec<HashMap<String, String>>) -> Vec<HashMap<String, String>> {
 
     let port_mongodb: u16 = to_u16!(&**MONGODB_PORT);
 
@@ -27,8 +28,6 @@ pub fn insert_new_document_bulk(object_vec: &Vec<HashMap<String, String>>)  -> V
 
     let db = client.db(&**MONGODB_DATABASE);
     db.auth(&**MONGODB_USER, &**MONGODB_PASSWORD).ok().expect("Failed to authorize user");
-
-    let collection: Collection = db.collection(&**MONGODB_COLLECTION);
 
     let mut array_result: Vec<HashMap<String, String>> = Vec::new();
 
@@ -118,16 +117,77 @@ pub fn insert_new_document(object_json: &HashMap<String, String>) -> Vec<HashMap
     return Vec::new();
 }
 
-#[allow(unused_variables)]
-pub fn find_documents(row: &String, date_from: &String, date_to: &String, token: &String) -> (HashMap<String, String>, status::Status){
+pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (HashMap<String, String>, status::Status){
 
     return (HashMap::new(), status::Ok);
 }
 
-#[allow(unused_variables)]
-pub fn search_block_with_id(block_id: &String, encryption: bool) -> (HashMap<String, String>, status::Status) {
+pub fn search_block_with_id(block_id: &String, encryption: bool) -> (String, status::Status) {
 
-    return (HashMap::new(), status::Ok);
+    let port_mongodb: u16 = to_u16!(&**MONGODB_PORT);
+
+    let client = Client::connect(&**MONGODB_HOST, port_mongodb).ok().expect("Failed to connect mongodb");
+
+    let db = client.db(&**MONGODB_DATABASE);
+    db.auth(&**MONGODB_USER, &**MONGODB_PASSWORD).ok().expect("Failed to authorize user");
+
+    let collection = db.collection(&**MONGODB_COLLECTION);
+
+    let block: Vec<_> = blockchain::get_block_from_id(block_id, &collection);
+
+    if block.len() > 0 {
+
+        let final_response: String;
+
+        let mut object_result: HashMap<String, String> = HashMap::new();
+
+        let verified: bool = blockchain::verify_block(block_id, &collection);
+
+        let mut is_verified: String = to_string!("false");
+
+        if verified {
+
+            is_verified = to_string!("true");
+        }
+
+        object_result.insert(to_string!("verified"), is_verified.clone());
+        object_result.insert(to_string!("block_id"), block_id.to_string());
+
+        let single_doc = block[0].clone();
+        let data_bson: &Bson = single_doc.get("data").unwrap();
+        let data_str = data_bson.as_str().unwrap().to_string();
+
+        if encryption == false {
+
+            let decrypt_data: HashMap<String, String> = encryption::decrypt_operation_object(&data_str);
+
+            let object_doc = DocumentFind {
+
+                data: decrypt_data,
+                block_id: block_id.to_string(),
+                verified: is_verified.clone()
+            };
+
+            final_response = json::encode(&object_doc).expect("Error encoding response");
+
+        } else {
+
+            object_result.insert(to_string!("data"), data_str);
+
+            final_response = json::encode(&object_result).expect("Error encoding response");
+        }
+
+        return (final_response, status::Ok);
+    }
+
+    let mut error_object: HashMap<String, String> = HashMap::new();
+
+    error_object.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
+    error_object.insert(to_string!("message"), messages::DATA_NOT_FOUND.to_string());
+
+    let str_error: String = json::encode(&error_object).expect("Error encoding response");
+
+    return (str_error, status::InternalServerError);
 }
 
 pub fn drop_blockchain(collection_name: &String) -> bool {

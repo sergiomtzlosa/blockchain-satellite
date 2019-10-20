@@ -114,6 +114,27 @@ pub fn get_id_from_hash(hash: &String, collection: &Collection) -> String {
     return mongo_id_hex;
 }
 
+pub fn get_block_from_id(id_block: &String, collection: &Collection) -> Vec<OrderedDocument> {
+
+    let mut options: FindOptions = FindOptions::new();
+
+    options.limit = Some(1);
+
+    let obj_id = mongodb::oid::ObjectId::with_string(id_block).unwrap();
+    let query = doc! { "_id" :  obj_id };
+
+    let cursor = collection.find(Some(query), Some(options)).ok().expect("Failed to execute find.");
+
+    let docs: Vec<_> = cursor.map(|doc| doc.unwrap()).collect();
+
+    if docs.len() > 0 {
+
+        return docs;
+    }
+
+    return Vec::new();
+}
+
 pub fn verify_block(id_block: &String, collection: &Collection)  -> bool {
 
     let mut options: FindOptions = FindOptions::new();
@@ -179,6 +200,31 @@ pub fn verify_block(id_block: &String, collection: &Collection)  -> bool {
     }
 
     return false;
+}
+
+pub fn next_block_id(block_id: &String, collection: &Collection) -> String {
+
+    let mut options: FindOptions = FindOptions::new();
+
+    options.limit = Some(1);
+    options.projection = Some(doc! { "_id" : true });
+
+    let obj_id = mongodb::oid::ObjectId::with_string(block_id).unwrap();
+    let query = doc! { "_id" : { "$gt" : obj_id } };
+
+    let cursor = collection.find(Some(query), Some(options)).ok().expect("Failed to execute find.");
+
+    let docs : Vec<_> = cursor.map(|doc| doc.unwrap()).collect();
+
+    if docs.len() > 0 {
+
+        let id_doc = docs[0].get_object_id("_id").unwrap();
+        let mongo_id_hex = id_doc.to_hex();
+
+        return mongo_id_hex;
+    }
+
+    return to_string!("");
 }
 
 fn new_hash(block: &HashMap<String, Value>) -> String {
