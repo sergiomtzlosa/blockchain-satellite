@@ -95,8 +95,6 @@ pub fn manage_values(request: &mut Request) -> Response {
 
             out = json::encode(&result_map).expect("Error encoding response");
 
-            println!("encoding here done!");
-
         } else {
 
             let raw_object = serde_json::from_str(&str_response);
@@ -114,8 +112,6 @@ pub fn manage_values(request: &mut Request) -> Response {
                 status_code = code;
 
                 out = json::encode(&result_map).expect("Error encoding response");
-
-                println!("custom encoding here done!");
             }
         }
 

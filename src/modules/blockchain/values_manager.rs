@@ -3,18 +3,21 @@ extern crate iron;
 
 use std::collections::HashMap;
 use iron::status;
+use rustc_serialize::json;
 use crate::modules::blockchain::blockchain_types::Value;
 use crate::modules::blockchain::blockchain_types;
 use crate::modules::blockchain::blockchain;
 // use crate::modules::blockchain::encryption;
 use crate::connection_data::*;
-//use mongodb::{Bson, bson, doc};
+
 use mongodb::{Client, ThreadedClient};
 use mongodb::db::ThreadedDatabase;
 use mongodb::coll::Collection;
 use mongodb::{Bson, bson, doc};
 
 pub use crate::macros;
+pub use crate::messages;
+pub use crate::http_codes;
 
 #[allow(unused_variables)]
 pub fn insert_new_document_bulk(object_json: &Vec<HashMap<String, String>>, token: &String)  -> (HashMap<String, String>, status::Status) {
@@ -38,7 +41,7 @@ pub fn insert_new_document(object_json: &HashMap<String, String>)  -> (HashMap<S
     let collection: Collection = db.collection(&**MONGODB_COLLECTION);
 
     let pre_hash: String = blockchain::get_pre_hash(&collection);
-    let mut object_chain: HashMap<String, Value> = blockchain::new_block(&pre_hash, &object_json);
+    let mut object_chain: HashMap<String, Value> = blockchain::new_block(&pre_hash, &object_json, &collection);
 
     object_chain.remove("pre_hash");
 
@@ -59,23 +62,56 @@ pub fn insert_new_document(object_json: &HashMap<String, String>)  -> (HashMap<S
     let timestamp_value: Bson = blockchain_types::get_bson(timestamp);
 
     let doc = doc!{ "data" => data_value,
-                     "datetime" => datetime_value,
-                     "high" => high_value,
-                     "nonce" => nonce_value,
-                     "hash" => hash_value,
-                     "merkle_root" => merkle_root_value,
-                     "timestamp" => timestamp_value };
+                    "datetime" => datetime_value,
+                    "high" => high_value,
+                    "nonce" => nonce_value,
+                    "hash" => hash_value.clone(),
+                    "merkle_root" => merkle_root_value,
+                    "timestamp" => timestamp_value };
 
-    let result_insert = collection.insert_one(doc.clone(), None);
+    let doc_clone = doc.clone();
+
+    let result_insert = collection.insert_one(doc_clone, None);
+
+    let mut array_id_hash = Vec::new();
 
     if result_insert.is_ok() {
 
         println!("Insert result OK");
-    } else {
-        println!("Insert result NOK");
+
+        let id_block: String = blockchain::get_id_from_hash(&hash_value, &collection);
+        let verified: bool = blockchain::verify_block(&id_block, &collection);
+
+        let mut block_verify: HashMap<String, String> = HashMap::new();
+
+        block_verify.insert(to_string!("block_id"), id_block);
+
+        let mut verified_status = "false";
+
+        if verified {
+            verified_status = "true";
+        }
+
+        block_verify.insert(to_string!("verified"), to_string!(verified_status));
+
+        array_id_hash.push(block_verify);
+
+        let encoded_object = json::encode(&array_id_hash).expect("Error encoding response");
+
+        let mut final_object: HashMap<String, String> = HashMap::new();
+
+        final_object.insert(to_string!("docs_inserted"), to_string!("1"));
+        final_object.insert(to_string!("blocks"), encoded_object);
+
+        return (final_object, status::Ok);
     }
 
-    return (HashMap::new(), status::Ok);
+    let mut value_error: HashMap<String, String> = HashMap::new();
+
+    value_error.insert(to_string!("code"), http_codes::HTTP_GENERIC_ERROR.to_string());
+    value_error.insert(to_string!("message"), messages::CANNOT_INSERT.to_string());
+
+    return (value_error, status::Ok);
 }
 
 #[allow(unused_variables)]
