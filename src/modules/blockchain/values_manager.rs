@@ -149,15 +149,20 @@ pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (S
     for doc in docs {
 
         let data: &Bson = doc.get("data").unwrap();
+
         let datetime: &Bson = doc.get("datetime").unwrap();
+
         let high: &Bson = doc.get("high").unwrap();
-        let pre_hash: &Bson = doc.get("pre_hash").unwrap();
+
+        // let pre_hash: &Bson = doc.get("pre_hash").unwrap();
+        // println!("llega 5");
         let nonce: &Bson = doc.get("nonce").unwrap();
 
         let data_str: String = data.as_str().unwrap().to_string();
+
         let datetime_str: String = datetime.as_str().unwrap().to_string();
         let high_str: String = high.as_str().unwrap().to_string();
-        let pre_hash_str: String = pre_hash.as_str().unwrap().to_string();
+        let pre_hash_str: String = to_string!("");//pre_hash.as_str().unwrap().to_string();
         let nonce_str: String = nonce.as_str().unwrap().to_string();
 
         let data_decrypt: HashMap<String, String> = encryption::decrypt_operation_object(&data_str);

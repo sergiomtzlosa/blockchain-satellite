@@ -223,15 +223,11 @@ pub fn find_docs(rows: &String, date_from: &String, date_to: &String, collection
 
           options.limit = Some(num_rows);
 
-          // let dt = Utc.ymd(1970, 1, 1).and_hms_nano(0, 0, 1, 444);
           let start_date_naive = NaiveDateTime::parse_from_str(date_from, "%Y-%m-%d %H:%M:%S+00:00").unwrap();
           let end_date_naive = NaiveDateTime::parse_from_str(date_to, "%Y-%m-%d %H:%M:%S+00:00").unwrap();
 
           let start_item = DateTime::<Utc>::from_utc(start_date_naive, Utc);
           let end_item = DateTime::<Utc>::from_utc(end_date_naive, Utc);
-
-          // let start = mongodb::UtcDateTime::from(start_item);
-          // let end = mongodb::UtcDateTime::from(end_date_naive);
 
           let start_date: Bson = Bson::from(start_item);
           let end_date: Bson = Bson::from(end_item);

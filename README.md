@@ -203,6 +203,16 @@ curl --request DELETE \
   -H'Token: aca6038665c811e8a96100089be8caec'
 ```
 
+- Query by date
+
+```
+curl --request PUT \
+  --url http://localhost:8086/api/values \
+  -H 'Content-type: application/json' \
+  -H 'Token: aca6038665c811e8a96100089be8caec' \
+  --data '{"docs" : "1","date_from":"2019-05-01 00:00:00","date_to":"2020-05-30 00:00:00"}'
+```
+
 ## Configuration
 
 Set your connection parameters for MySQL/MariaDB and Mongo on **.env** file.
