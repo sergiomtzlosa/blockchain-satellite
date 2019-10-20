@@ -40,7 +40,7 @@ If your MongoDB has user authentication:
 mongo -u username -p password --authenticationDatabase admin < 001_users.js
 ```
 
-## Compile
+## Compile Rust program
 
 ```
 cargo build
