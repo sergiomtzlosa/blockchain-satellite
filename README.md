@@ -135,6 +135,46 @@ curl -X POST \
 }'
 ```
 
+## Blockchain services
+
+- Single document insertion
+
+```
+curl --request POST \
+  --url http://localhost:8086/api/values \
+  -H 'Content-type: application/json' \
+  -H 'Token: aca6038665c811e8a96100089be8caec' \
+  --data '{"hash" : "valueaa22222", "key2" : "value2", "key3" : "value3", "key4" : "value4", "key5" : "value5", "key6" : "value6", "key7" : "value7"}'
+```
+
+- Multiple document insertion
+
+```
+curl --request POST \
+  --url http://localhost:8086/api/values \
+  -H 'Content-type: application/json' \
+  -H 'Token: aca6038665c811e8a96100089be8caec' \
+  --data '[{"key1" : "value56","key2" : "value2","key3" : "value3","key4" : "value4","key5" : "value5","key6" : "value6","key7" : "value7"},{"key1" : "value45","key2" : "value2","key3" : "value3",	"key4" : "value4","key5" : "value5","key6" : "value6","key7" : "value7"}]'
+```
+
+- Get single block by id
+
+```
+curl --request GET \
+  --url 'http://localhost:8086/api/values?block_id=5dac673a3537345b528984c7&encryption=1' \
+  -H 'Content-type: application/json' \
+  -H 'Token: aca6038665c811e8a96100089be8caec'
+```
+
+- Full blockchain deletion
+
+```
+curl --request DELETE \
+  --url 'http://localhost:8086/api/values?blockchain_name=sensors_values' \
+  -H 'Content-type: application/json' \
+  -H'Token: aca6038665c811e8a96100089be8caec'
+```
+
 ## Configuration
 
 Set your connection parameters for MySQL/MariaDB and Mongo on **.env** file.
