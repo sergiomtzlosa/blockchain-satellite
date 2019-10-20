@@ -1,7 +1,4 @@
-// extern crate serialize;
-
 use mongodb::Bson;
-// use serialize::json;
 
 #[derive(RustcDecodable, RustcEncodable)]
 pub struct BlockChainBlock  {

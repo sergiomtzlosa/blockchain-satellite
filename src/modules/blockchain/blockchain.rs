@@ -128,7 +128,7 @@ pub fn verify_block(id_block: &String, collection: &Collection)  -> bool {
 
     let docs: Vec<_> = cursor.map(|doc| doc.unwrap()).collect();
 
-    println!("recover objects verify_block: {}", docs.len());
+    // println!("recover objects verify_block: {}", docs.len());
 
     if docs.len() > 0 {
 

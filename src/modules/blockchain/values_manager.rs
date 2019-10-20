@@ -77,7 +77,7 @@ pub fn insert_new_document(object_json: &HashMap<String, String>)  -> (HashMap<S
 
     if result_insert.is_ok() {
 
-        println!("Insert result OK");
+        // println!("Insert result OK");
 
         let id_block: String = blockchain::get_id_from_hash(&hash_value, &collection);
         let verified: bool = blockchain::verify_block(&id_block, &collection);
