@@ -25,7 +25,7 @@ Execute the script present in **DDL/mysql/sensordb_DDL.sql** to fill the tables,
 mysql -u root -p < sensordb_DDL.sql
 ```
 
-## Database and web services credentials
+## Database credentials
 
 | Username      | Password      |
 | ------------- |:-------------:|
