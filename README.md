@@ -26,6 +26,20 @@ mysql -u root -p < sensordb_DDL.sql
 | admin         | admin1234     |
 | api_user      | api_user1234  |
 
+## MongoDB tune-up
+
+Use the script on **DDL/mongodb/001_user.js** to create the user and set permission over the MongoDB system:
+
+```
+mongo  --authenticationDatabase admin < 001_users.js
+```
+
+If your MongoDB has user authentication:
+
+```
+mongo -u username -p password --authenticationDatabase admin < 001_users.js
+```
+
 ## Compile
 
 ```
