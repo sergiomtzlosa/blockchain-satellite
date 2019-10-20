@@ -229,6 +229,6 @@ curl --request PUT \
 
 ## Configuration
 
-Set your connection parameters for MySQL/MariaDB and Mongo on **.env** file.
+Set your connection parameters for MySQL/MariaDB and MongoDB on **.env** file.
 
 ENJOY!
