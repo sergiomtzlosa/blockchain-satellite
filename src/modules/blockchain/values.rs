@@ -235,6 +235,7 @@ fn perform_blockchain_put(data: &HashMap<String, String>) -> (HashMap<String, St
     return values_manager::find_documents(&rows, &date_from, &date_to);
 }
 
+#[allow(unused_variables)]
 fn perform_blockchain_delete(collection: &String) -> (HashMap<String, String>, status::Status) {
 
     let deleted: bool =  values_manager::drop_blockchain(collection);

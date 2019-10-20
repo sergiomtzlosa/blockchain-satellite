@@ -117,6 +117,7 @@ pub fn insert_new_document(object_json: &HashMap<String, String>) -> Vec<HashMap
     return Vec::new();
 }
 
+#[allow(unused_variables)]
 pub fn find_documents(rows: &String, date_from: &String, date_to: &String) -> (HashMap<String, String>, status::Status){
 
     return (HashMap::new(), status::Ok);
