@@ -49,5 +49,3 @@ COPY ./.env /blockchain_src/
 COPY ./Cargo.toml /blockchain_src/
 
 RUN cargo build
-
-RUN cargo run docker
