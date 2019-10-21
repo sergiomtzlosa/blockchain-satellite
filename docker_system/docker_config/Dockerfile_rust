@@ -21,6 +21,9 @@ COPY ./Cargo.toml ./Cargo.lock /blockchain_src/
 RUN cargo build --release
 
 FROM scratch
+
 COPY --from=build /blockchain_src .
+
 USER 1000
+
 CMD ["./blockchain-rust docker"]
