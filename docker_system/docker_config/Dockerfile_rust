@@ -36,4 +36,4 @@ COPY ./Cargo.toml ./Cargo.lock /blockchain-rust/
 
 RUN ~/.cargo/bin/cargo build
 
-#RUN ~/.cargo/bin/cargo run docker
+RUN nohup ~/.cargo/bin/cargo run docker &
