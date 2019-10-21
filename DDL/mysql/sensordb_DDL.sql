@@ -2,7 +2,11 @@
 
 DROP DATABASE IF EXISTS `sensors`;
 
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';
+
 CREATE USER IF NOT EXISTS 'data_api'@'%' IDENTIFIED BY 'data_api';
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
 
 GRANT ALL PRIVILEGES ON *.* TO 'data_api'@'%';
 
