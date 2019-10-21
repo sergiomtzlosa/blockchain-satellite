@@ -1,0 +1,46 @@
+version: '2'
+services:
+  blockchain-rust:
+    container_name: blockchain-rust-api
+    build:
+      context: ./
+      dockerfile: ./docker_system/docker_config/docker/Dockerfile_rust
+    ports:
+      - "8090:8086"
+    volumes:
+      - ./:/blockchain_src
+    links:
+      - database:database
+      - mongo:mongo
+    restart: unless-stopped
+  database:
+    container_name: blockchain-rust-users
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: ./docker_system/docker_config/Dockerfile_mysql
+    ports:
+      - "3506:3306"
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sensors
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - ./docker_system/mariadb/data:/var/lib/mysql
+  mongo:
+    container_name: blockchain-rust-mongo
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - "29017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: admin
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ./docker_system/mongo/config:/data/configdb
+      - ./docker_system/mongo/data:/data/db
+      - ./DDL/mongodb/001_users.js:/docker-entrypoint-initdb.d/001_users.js:ro
+volumes:
+  mysql_data:
