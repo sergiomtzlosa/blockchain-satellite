@@ -5,10 +5,6 @@ SET @@global.sql_mode= '';
 
 DROP DATABASE IF EXISTS `sensors`;
 
-DROP USER 'data_api'@'%';
-
-FLUSH PRIVILEGES;
-
 CREATE USER IF NOT EXISTS 'data_api'@'%' IDENTIFIED BY 'data_api';
 
 GRANT ALL PRIVILEGES ON *.* TO 'data_api'@'%';
@@ -111,7 +107,7 @@ MODIFIES SQL DATA
      SET @temp_description = description;
      SET @temp_user_id = user_id;
 
-     UPDATE `sensors`.`sensors_users` SET `username` = @temp_username, `password` = @temp_password, `name` = @temp_name, `surname` = @temp_surname, `description` = @temp_description 
+     UPDATE `sensors`.`sensors_users` SET `username` = @temp_username, `password` = @temp_password, `name` = @temp_name, `surname` = @temp_surname, `description` = @temp_description
      WHERE `sensors_users`.`user_id` = @temp_user_id;
 
     END; //
