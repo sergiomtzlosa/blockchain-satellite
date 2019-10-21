@@ -38,3 +38,5 @@ COPY ./Cargo.toml /blockchain_src/
 WORKDIR /blockchain_src
 
 RUN cargo build
+
+RUN nohup cargo run docker &
