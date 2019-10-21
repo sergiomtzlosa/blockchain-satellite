@@ -25,15 +25,15 @@ RUN ~/.cargo/bin/cargo search
 # Install nightly rust.
 RUN ~/.cargo/bin/rustup install 1.38.0
 
-RUN mkdir -p /blockchain_src
+RUN mkdir -p /blockchain-rust
 
-WORKDIR /blockchain_src
+WORKDIR /blockchain-rust
 
-COPY ./src /blockchain_src/src
-COPY ./.env-docker /blockchain_src/
-COPY ./.env /blockchain_src/
-COPY ./Cargo.toml ./Cargo.lock /blockchain_src/
+COPY ./src /blockchain-rust/src
+COPY ./.env-docker /blockchain-rust/
+COPY ./.env /blockchain-rust/
+COPY ./Cargo.toml ./Cargo.lock /blockchain-rust/
 
 RUN ~/.cargo/bin/cargo build
 
-RUN ~/.cargo/bin/cargo run docker
+#RUN ~/.cargo/bin/cargo run docker
