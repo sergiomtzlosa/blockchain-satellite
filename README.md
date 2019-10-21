@@ -10,18 +10,18 @@ This is a project to set-up a blockchain over a Low-Orbit satellite as part of a
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-	- [Table of Contents](#table-of-contents)
-	- [Technology used](#technology-used)
-	- [MySQL tune-up](#mysql-tune-up)
-	- [Database credentials](#database-credentials)
-	- [MongoDB tune-up](#mongodb-tune-up)
-	- [Compile Rust Blockchain](#compile-rust-blockchain)
-	- [Run Rust Blockchain](#run-rust-blockchain)
-	- [Blockchain Users CRUD](#blockchain-users-crud)
-	- [Blockchain services](#blockchain-services)
-	- [Configuration file](#configuration-file)
-	- [Python script for data extraction](python-script-for-data-extraction)
-	- [Docker for Rust Blockchain](#docker-for-rust-blockchain)
+- [Table of Contents](#table-of-contents)
+- [Technology used](#technology-used)
+- [MySQL tune-up](#mysql-tune-up)
+- [Database credentials](#database-credentials)
+- [MongoDB tune-up](#mongodb-tune-up)
+- [Compile Rust Blockchain](#compile-rust-blockchain)
+- [Run Rust Blockchain](#run-rust-blockchain)
+- [Blockchain Users CRUD](#blockchain-users-crud)
+- [Blockchain services](#blockchain-services)
+- [Configuration file](#configuration-file)
+- [Python script for data extraction](python-script-for-data-extraction)
+- [Docker for Rust Blockchain](#docker-for-rust-blockchain)
 
 <!-- /TOC -->
 
@@ -262,7 +262,7 @@ Set your connection parameters for MySQL/MariaDB and MongoDB on **.env** file.
 
 There is a python bulk script to extract the encrypted information from the MongoDB, the Blockchain blocks are stored in the MongoDB database **sensors** on the collection **sensors_values**.
 
-This script is present in **DDL/mongodb/script_extractor**, it will create a folder in the same place called **dumps_mongo** with all the blockchain decrypted blocks. 
+This script is present in **DDL/mongodb/script_extractor**, it will create a folder in the same place called **dumps_mongo** with all the blockchain decrypted blocks.
 
 The script shows this output when execute: **python bulk_blockchain.py**:
 
@@ -300,6 +300,3 @@ python bulk_blockchain.py -type=simple -start-date="29-07-2019" -end-date="31-07
 ## Docker for Rust Blockchain
 
 Coming soon.
-
-
-KTHXBYE!
