@@ -20,8 +20,8 @@ This is a project to set-up a blockchain over a Low-Orbit satellite as part of a
 - [Blockchain Users CRUD](#blockchain-users-crud)
 - [Blockchain services](#blockchain-services)
 - [Configuration file](#configuration-file)
-- [Python script for data extraction](python-script-for-data-extraction)
-- [Postman collection](postman-collection)
+- [Python script for data extraction](#python-script-for-data-extraction)
+- [Postman collection](#postman-collection)
 - [Docker for Rust Blockchain](#docker-for-rust-blockchain)
 
 <!-- /TOC -->
