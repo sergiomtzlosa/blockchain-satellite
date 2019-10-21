@@ -44,7 +44,7 @@ RUN ~/.cargo/bin/cargo init \
     && echo "url = '*'" >> Cargo.toml \
     && ~/.cargo/bin/cargo build \
     && rm -rf /tmp/dummy-crate
-    
+
 RUN mkdir -p /blockchain_src
 
 WORKDIR /blockchain_src
@@ -54,6 +54,6 @@ COPY ./.env-docker /blockchain_src/
 COPY ./.env /blockchain_src/
 COPY ./Cargo.toml ./Cargo.lock /blockchain_src/
 
-RUN cargo build --release
+RUN ~/.cargo/bin/cargo build
 
-CMD ["cargo run docker"]
+CMD ["~/.cargo/bin/cargo run docker"]
