@@ -21,6 +21,7 @@ This is a project to set-up a blockchain over a Low-Orbit satellite as part of a
 - [Blockchain services](#blockchain-services)
 - [Configuration file](#configuration-file)
 - [Python script for data extraction](python-script-for-data-extraction)
+- [Postman collection](postman-collection)
 - [Docker for Rust Blockchain](#docker-for-rust-blockchain)
 
 <!-- /TOC -->
@@ -296,6 +297,10 @@ Search between two dates over the Blockchain:
 ```
 python bulk_blockchain.py -type=simple -start-date="29-07-2019" -end-date="31-07-2019"
 ```
+
+## Postman collection
+
+There is a postman collection available on **DDL/**, import it on your postman application to test the services, or use the readme CURLs.
 
 ## Docker for Rust Blockchain
 
