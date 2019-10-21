@@ -7,8 +7,6 @@ services:
       dockerfile: ./docker_system/docker_config/Dockerfile_rust
     ports:
       - "8090:8086"
-    volumes:
-      - ./:/blockchain_src
     links:
       - database:database
       - mongo:mongo
