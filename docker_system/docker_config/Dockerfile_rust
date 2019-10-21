@@ -25,6 +25,12 @@ RUN mkdir -p /blockchain_src
 
 WORKDIR "/blockchain_src"
 
+COPY ./src /blockchain_src/src
+
+COPY ./.env-docker /blockchain_src/
+
+COPY ./Cargo.toml /blockchain_src/
+
 RUN cargo build
 
 RUN cargo run docker
