@@ -4,7 +4,7 @@ services:
     container_name: blockchain-rust-api
     build:
       context: ./
-      dockerfile: ./docker_system/docker_config/docker/Dockerfile_rust
+      dockerfile: ./docker_system/docker_config/Dockerfile_rust
     ports:
       - "8090:8086"
     volumes:
