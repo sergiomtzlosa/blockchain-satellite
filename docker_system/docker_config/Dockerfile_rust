@@ -3,9 +3,6 @@ WORKDIR /usr/src
 
 RUN rustup target add x86_64-unknown-linux-musl
 
-WORKDIR /usr/src/url-shortener
-COPY Cargo.toml Cargo.lock ./
-
 RUN mkdir -p /blockchain_src
 
 WORKDIR /blockchain_src
