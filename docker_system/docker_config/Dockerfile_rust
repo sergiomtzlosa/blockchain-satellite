@@ -39,7 +39,7 @@ RUN set -eux; \
 
 RUN mkdir -p /blockchain_src
 
-COPY ./src /blockchain_src/
+COPY ./src /blockchain_src/src
 
 COPY ./.env-docker /blockchain_src/
 
