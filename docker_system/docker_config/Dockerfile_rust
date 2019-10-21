@@ -22,7 +22,7 @@ ENV PATH "$PATH:~/.cargo/bin"
 # Update the local crate index
 RUN ~/.cargo/bin/cargo search
 
-# Install nightly rust.
+# Install rust 1.38.0
 RUN ~/.cargo/bin/rustup install 1.38.0
 
 RUN mkdir -p /blockchain-rust

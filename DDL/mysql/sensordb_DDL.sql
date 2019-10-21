@@ -1,8 +1,5 @@
 -- Execute: mysql -u root -p < sensordb_DDL.sql
 
-SET GLOBAL max_allowed_packet=1073741824;
-SET @@global.sql_mode= '';
-
 DROP DATABASE IF EXISTS `sensors`;
 
 CREATE USER IF NOT EXISTS 'data_api'@'%' IDENTIFIED BY 'data_api';
