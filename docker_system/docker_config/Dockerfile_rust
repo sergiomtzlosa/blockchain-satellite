@@ -2,7 +2,7 @@ FROM rust:1.38.0 AS build
 
 RUN rustup target add x86_64-unknown-linux-musl
 
-RUN apt-get install -y musl-gcc
+RUN apt-get install -y musl-dev
 
 RUN mkdir -p /blockchain_src
 
@@ -19,7 +19,7 @@ RUN cargo install --target x86_64-unknown-linux-musl --path .
 
 FROM scratch
 
-RUN apt-get install -y musl-gcc
+RUN apt-get install -y musl-dev
 
 COPY --from=build /usr/local/cargo/bin/blockchain-rust .
 
