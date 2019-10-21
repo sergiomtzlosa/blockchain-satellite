@@ -1,9 +1,29 @@
+
 Blockchain written in Rust for low-orbit satellites
 ----------------------------------------------------
 
 This is a project to set-up a blockchain over a Low-Orbit satellite as part of a proof of concept for the paper:
 
 [Blockchain and radio communications over suborbital spaceflights: Watchtowers and Mystics](https://arxiv.org/abs/1910.04835)
+
+## Table of Contents
+
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+	- [Table of Contents](#table-of-contents)
+	- [Technology used](#technology-used)
+	- [MySQL tune-up](#mysql-tune-up)
+	- [Database credentials](#database-credentials)
+	- [MongoDB tune-up](#mongodb-tune-up)
+	- [Compile Rust Blockchain](#compile-rust-blockchain)
+	- [Run Rust Blockchain](#run-rust-blockchain)
+	- [Blockchain Users CRUD](#blockchain-users-crud)
+	- [Blockchain services](#blockchain-services)
+	- [Configuration file](#configuration-file)
+	- [Python script for data extraction](python-script-for-data-extraction)
+	- [Docker for Rust Blockchain](#docker-for-rust-blockchain)
+
+<!-- /TOC -->
 
 ## Technology used
 
@@ -46,18 +66,19 @@ If your MongoDB has user authentication:
 mongo -u username -p password --authenticationDatabase admin < 001_users.js
 ```
 
-## Compile Rust program
+## Compile Rust Blockchain
 
 ```
 cargo build
 ```
 
-## Run
+## Run Rust Blockchain
+
 ```
 cargo run
 ```
 
-## Users CRUD
+## Blockchain Users CRUD
 
 - Create new user
 
@@ -233,8 +254,52 @@ curl --request PUT \
   --data '{"docs" : "1","date_from":"2019-05-01 00:00:00","date_to":"2020-05-30 00:00:00"}'
 ```
 
-## Configuration
+## Configuration file
 
 Set your connection parameters for MySQL/MariaDB and MongoDB on **.env** file.
 
-ENJOY!
+## Python script for data extraction
+
+There is a python bulk script to extract the encrypted information from the MongoDB, the Blockchain blocks are stored in the MongoDB database **sensors** on the collection **sensors_values**.
+
+This script is present in **DDL/mongodb/script_extractor**, it will create a folder in the same place called **dumps_mongo** with all the blockchain decrypted blocks. 
+
+The script shows this output when execute: **python bulk_blockchain.py**:
+
+```
+Options for bulk_blockchain.py:
+
+     -type: Mandatory option to choose between databases
+         simple: Bulk to files the data from the standard sensors blockchain (output path ~/dumps_mongo/simple_blockchain)
+
+     Optional params:
+
+         -start-date: Start date to search with format dd-mm-YYY HH:mm:ss
+         -end-date: End date to search with format dd-MM-YYY HH:mm:ss
+
+         **No date parameters mean to get the full data timeline
+
+Example:
+           python bulk_blockchain.py -type=simple
+
+           python bulk_blockchain.py -type=simple -start-date="29-07-2019" -end-date="31-07-2019"
+```
+
+Extract all the Blockchain:
+
+```
+python bulk_blockchain.py -type=simple
+```
+
+Search between two dates over the Blockchain:
+
+```
+python bulk_blockchain.py -type=simple -start-date="29-07-2019" -end-date="31-07-2019"
+```
+
+## Docker for Rust Blockchain
+
+Coming soon.
+
+
+KTHXBYE!
