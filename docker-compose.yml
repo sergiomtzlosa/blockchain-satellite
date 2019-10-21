@@ -10,7 +10,6 @@ services:
     links:
       - database:database
       - mongo:mongo
-    tty: true
     restart: unless-stopped
   database:
     container_name: blockchain-users
