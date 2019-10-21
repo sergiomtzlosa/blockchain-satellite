@@ -1,0 +1,396 @@
+{
+	"info": {
+		"_postman_id": "1dc03690-7ac9-404a-8f4f-87d0e40e26c7",
+		"name": "Sensors Blockchain Rust",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8086/api/users",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"user_3\",\n\t\"password\" : \"passwordUser3\",\n\t\"name\" : \"User3\",\n\t\"surname\" : \"User3 description\",\n\t\"description\" : \"API user\",\n\t\"admin\" : \"0\"\n}\n"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/users",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					},
+					{
+						"key": "_method",
+						"value": "put",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"user_3\",\n\t\"password\" : \"passwordUser3\",\n\t\"name\" : \"User3\",\n\t\"surname\" : \"User3 description modified\",\n\t\"description\" : \"API user\",\n\t\"admin\" : \"0\",\n\t\"user_id\" : \"3\"\n}\n"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/users",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"user_id\" : \"3\"}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/users",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/users",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/users?user_id=1",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\" : \"api_user\",\n\t\"password\" : \"api_user1234\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/sensors/api/login",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"sensors",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/values",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"disabled": false,
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"disabled": false,
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"key1\" : \"valueaa22222\",\n\t\"key2\" : \"value2\",\n\t\"key3\" : \"value3\",\n\t\"key4\" : \"value4\",\n\t\"key5\" : \"value5\",\n\t\"key6\" : \"value6\",\n\t\"key7\" : \"value7\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/values",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"values"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/values",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"docs\" : \"1\",\n\t\"date_from\" : \"2018-05-01 00:00:00\",\n\t\"date_to\" : \"2019-05-30 00:00:00\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/values",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"values"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/values",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/values?blockchain_name=sensors_values",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"values"
+					],
+					"query": [
+						{
+							"key": "blockchain_name",
+							"value": "sensors_values"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8086/api/values",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "api_sensor",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-type",
+						"value": "application/json"
+					},
+					{
+						"key": "Token",
+						"value": "aca6038665c811e8a96100089be8caec"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}:{{port}}/api/values?block_id=5bc9e64a74fece048f04b206&encryption=1",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"api",
+						"values"
+					],
+					"query": [
+						{
+							"key": "block_id",
+							"value": "5bc9e64a74fece048f04b206"
+						},
+						{
+							"key": "encryption",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "466f3682-66e0-4651-9a2d-dd4862472370",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "de589840-3d98-4e88-a279-5e9f8e626200",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
