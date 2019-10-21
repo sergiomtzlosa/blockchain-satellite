@@ -2,6 +2,8 @@ FROM rust:1.38.0 AS build
 
 RUN rustup target add x86_64-unknown-linux-musl
 
+RUN apt-get install -y musl-gcc
+
 RUN mkdir -p /blockchain_src
 
 WORKDIR /blockchain_src
