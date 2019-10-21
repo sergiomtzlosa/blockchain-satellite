@@ -55,7 +55,9 @@ fn main() {
     println!("\t---------------------");
     println!("");
 
-    if utils::uses_docker(env::args()) {
+    let use_docker: bool = utils::uses_docker(env::args());
+
+    if use_docker {
 
         dotenv::from_filename(".env-docker").ok();
 
@@ -85,6 +87,13 @@ fn main() {
     router.delete(VALUES_SERVICE, values, "values");
 
     let server = to_string!("0.0.0.0:") + &**WEBSERVER_PORT;
+
+    if use_docker {
+
+        println!("");
+        println!(" - Exposed port 0.0.0.0:8090 on Docker");
+        println!("");
+    }
 
     // encryption_test();
 
