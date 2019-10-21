@@ -1,6 +1,7 @@
 extern crate crypto;
 
 use std::env;
+use std::env::Args;
 use iron::status;
 use iron::prelude::*;
 use iron::mime::Mime;
@@ -168,4 +169,22 @@ pub fn sha256_string(str_value: &str) -> String {
     let result: String = sha.result_str();
 
     return result;
+}
+
+pub fn uses_docker(args: Args) -> bool {
+
+    let mut docker_enabled: bool = false;
+
+    for argument in args {
+
+        let arg_item: String = argument.to_string().to_lowercase();
+
+        if arg_item == "docker" {
+
+            docker_enabled = true;
+            break;
+        }
+    }
+
+    return docker_enabled;
 }

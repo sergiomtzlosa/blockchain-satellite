@@ -1,0 +1,3 @@
+FROM mariadb
+ADD ./database/sensordb_DDL.sql /docker-entrypoint-initdb.d/
+RUN chmod 664 /docker-entrypoint-initdb.d/sensordb_DDL.sql

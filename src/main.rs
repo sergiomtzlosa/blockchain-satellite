@@ -13,6 +13,8 @@ use dotenv::dotenv;
 use iron::prelude::*;
 use router::Router;
 use std::str;
+use blockchain_rust::utils;
+use std::env;
 
 #[macro_use]
 mod macros;
@@ -48,7 +50,25 @@ fn values(req: &mut Request) -> IronResult<Response> {
 
 fn main() {
 
-    dotenv().ok();
+    println!("");
+    println!("\tRust blockchain v1.0");
+    println!("\t---------------------");
+    println!("");
+
+    if utils::uses_docker(env::args()) {
+
+        dotenv::from_filename(".env-docker").ok();
+
+        println!("\tLoading Docker configuration...");
+
+    } else {
+
+        dotenv().ok();
+
+        println!("\tLoading default configuration...");
+    }
+
+    println!("");
 
     let mut router = Router::new();
 
