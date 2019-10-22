@@ -10,7 +10,6 @@ This is a project to set-up a blockchain over a Low-Orbit satellite as part of a
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [Table of Contents](#table-of-contents)
 - [Technology used](#technology-used)
 - [MySQL tune-up](#mysql-tune-up)
 - [Database credentials](#database-credentials)
