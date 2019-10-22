@@ -284,4 +284,10 @@ There is a postman collection available on **DDL/**, import it on your postman a
 
 ## Docker for Rust Blockchain
 
-Coming soon.
+Docker uses as internal and external port **8090**. Start the Docker witchcraft with:
+
+```
+docker-compose up
+```
+
+Docker uses the **.env-docker** file to obtain the configuration parameters.
