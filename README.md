@@ -1,4 +1,3 @@
-
 Blockchain written in Rust for low-orbit satellites
 ----------------------------------------------------
 
