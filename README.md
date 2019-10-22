@@ -157,26 +157,6 @@ curl -X POST \
 }'
 ```
 
-- Insert new document in MongoDB database
-
-```
-curl -X POST \
-  -L \
-  http://localhost:8086/api/values \
-  -H 'Cache-Control: no-cache' \
-  -H 'Content-type: application/json' \
-  -H 'Token: aca6038665c811e8a96100089be8caec' \
-  -d '{
-	"key1" : "value1",
-	"key2" : "value2",
-	"key3" : "value3",
-	"key4" : "value4",
-	"key5" : "value5",
-	"key6" : "value6",
-	"key7" : "value7"
-}'
-```
-
 ## Blockchain services
 
 - Single document insertion

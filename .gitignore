@@ -1,4 +1,5 @@
 /target/
 **/*.rs.bk
 .DS_Store
-Cargo.lock
+docker_system/mariadb/data/
+docker_system/mongo/data/

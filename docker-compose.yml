@@ -6,11 +6,10 @@ services:
       context: ./
       dockerfile: ./docker_system/docker_config/Dockerfile_rust
     ports:
-      - "8090:8086"
+      - "8090:8090"
     links:
       - database:database
-      - mongo:mongo
-    tty: true
+      - mongodb:mongodb
     restart: unless-stopped
   database:
     container_name: blockchain-users
@@ -27,9 +26,12 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
       - ./docker_system/mariadb/data:/var/lib/mysql
-  mongo:
+  mongodb:
     container_name: blockchain-mongo
     image: mongo
+    build:
+      context: ./
+      dockerfile: ./docker_system/docker_config/Dockerfile_mongodb
     restart: unless-stopped
     ports:
       - "29017:27017"
@@ -40,6 +42,5 @@ services:
     volumes:
       - ./docker_system/mongo/config:/data/configdb
       - ./docker_system/mongo/data:/data/db
-      - ./DDL/mongodb/001_users.js:/docker-entrypoint-initdb.d/001_users.js:ro
 volumes:
   mysql_data:

@@ -54,6 +54,7 @@ fn main() {
     println!("\tRust blockchain v1.0");
     println!("\t---------------------");
     println!("");
+    println!("");
 
     let use_docker: bool = utils::uses_docker(env::args());
 
@@ -88,18 +89,12 @@ fn main() {
 
     let server = to_string!("0.0.0.0:") + &**WEBSERVER_PORT;
 
-    if use_docker {
-
-        println!("");
-        println!(" - Exposed port 0.0.0.0:8090 on Docker");
-        println!("");
-    }
-
     // encryption_test();
 
     println!("");
     println!(" - Starting webserver with Rust...");
     println!(" - Webserver running on http://{}", server);
+    println!("");
 
     Iron::new(router).http(server).unwrap();
 }
