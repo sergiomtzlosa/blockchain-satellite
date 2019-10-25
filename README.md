@@ -11,7 +11,7 @@ This is a project to set-up a blockchain over a Low-Orbit satellite as part of a
 
 - [Technology used](#technology-used)
 - [MySQL tune-up](#mysql-tune-up)
-- [Database credentials](#database-credentials)
+- [MySQL database credentials](#mysql-database-credentials)
 - [MongoDB tune-up](#mongodb-tune-up)
 - [Compile Rust Blockchain](#compile-rust-blockchain)
 - [Run Rust Blockchain](#run-rust-blockchain)
@@ -44,7 +44,7 @@ Execute the script present in **DDL/mysql/sensordb_DDL.sql** to fill the tables,
 mysql -u root -p < sensordb_DDL.sql
 ```
 
-## Database credentials
+## MySQL database credentials
 
 | Username      | Password      |
 | ------------- |:-------------:|
