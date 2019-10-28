@@ -11,7 +11,7 @@ The script shows this output when execute: **python bulk_blockchain.py**:
 Options for bulk_blockchain.py:
 
      -type: Mandatory option to choose between databases
-         simple: Bulk to files the data from the standard sensors blockchain (output path ~/dumps_mongo/simple_blockchain)
+         simple: Bulk to files the data from the standard sensors blockchain (output path ./dumps_mongo/simple_blockchain)
 
      Optional params:
 
