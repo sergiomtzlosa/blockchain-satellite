@@ -92,7 +92,7 @@ def main():
       print "Options for bulk_blockchain.py:"
       print ""
       print "     -type: Mandatory option to choose between databases"
-      print "         simple: Bulk to files the data from the standard sensors blockchain (output path ~/dumps_mongo/simple_blockchain)"
+      print "         simple: Bulk to files the data from the standard sensors blockchain (output path ./dumps_mongo/simple_blockchain)"
       print ""
       print "     Optional params:"
       print ""
