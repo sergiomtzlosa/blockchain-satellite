@@ -361,11 +361,22 @@ fn get_chain_high(collection: &Collection) -> String {
 
     let mut options: FindOptions = FindOptions::new();
 
+    options.limit = Some(1);
     options.sort = Some(doc! { "_id" : -1 });
 
     let cursor = collection.find(None, Some(options)).ok().expect("Failed to execute find.");
 
     let docs : Vec<_> = cursor.map(|doc| doc.unwrap()).collect();
 
-    return docs.len().to_string();
+    let mut high_value: i32 = 1;
+
+    if docs.len() > 0 {
+
+        let high_str: &Bson = docs[0].get("high").unwrap();
+        let str_value: String = high_str.as_str().unwrap().to_string();
+        let current_hight: i32 = to_int!(str_value);
+        high_value = current_hight + 1;
+    }
+
+    return high_value.to_string();
 }
