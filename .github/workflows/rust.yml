@@ -1,4 +1,4 @@
-name: Rust
+name: Rust build
 
 on: [push]
 
@@ -6,6 +6,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - 1.31.0
     name: "compile"
     steps:
     - uses: sergiomtzlosa/blockchain-satellite@master
