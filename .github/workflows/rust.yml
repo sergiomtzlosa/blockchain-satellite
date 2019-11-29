@@ -2,14 +2,9 @@ name: Rust build
 on: [push]
 jobs:
   build:
+    name: Compilation Jobs
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        rust:
-          - stable
-          - 1.31.0
-    name: "compile"
     steps:
-      - uses: actions/checkout@master
-        with:
-          args: cargo build --verbose && cargo test --verbose
+      - name: Blockchain rust compilation
+        run: |
+          cargo build --verbose && cargo test --verbose
