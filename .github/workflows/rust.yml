@@ -1,10 +1,8 @@
 name: Rust build
-
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -13,7 +11,6 @@ jobs:
           - 1.31.0
     name: "compile"
     steps:
-      - uses: actions/checkout@v1
-      - uses: sergiomtzlosa/blockchain-satellite@master
-          with:
-            args: cargo build --verbose && cargo test --verbose
+      - uses: actions/checkout@master
+        with:
+          args: cargo build --verbose && cargo test --verbose
