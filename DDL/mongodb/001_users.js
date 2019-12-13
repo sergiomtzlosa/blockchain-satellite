@@ -1,5 +1,6 @@
 // mongo  --authenticationDatabase admin < 001_users.js
 // With user authentication: mongo -u username -p password --authenticationDatabase admin < 001_users.js
+//
 
 use admin
 
