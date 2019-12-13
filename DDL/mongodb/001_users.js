@@ -29,9 +29,11 @@ if (authResult) {
 
   print("Authenticated as root!!!")
 
-  var user = db.system.users.find({user:'data_api'}).count()
+  use sensors;
 
-  if (user > 0) {
+  var user = db.getUser("data_api")
+
+  if (user != null) {
 
      db.dropUser("data_api")
 
