@@ -36,3 +36,4 @@ Search between two dates over the Blockchain:
 
 ```
 python bulk_blockchain.py -type=simple -start-date="29-07-2019" -end-date="31-07-2019"
+```
